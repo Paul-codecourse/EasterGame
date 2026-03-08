@@ -1,0 +1,183 @@
+🎮 3-Lane Rail Shooter (Browser Prototype)
+
+Let’s design a clean, simple version you could build fast.
+
+🧱 Core Game Structure (Browser Canvas)
+1️⃣ Layout
+
+Visually it would look like:
+
+| Lane 1 | Lane 2 | Lane 3 |
+Enemies move downward toward player
+Player fixed at bottom
+
+You don’t move forward — enemies move toward you.
+
+
+
+
+2️⃣ Core Mechanics
+🎯 Player
+
+Fixed at bottom center
+
+Can:
+
+Shoot (auto or click)
+
+Switch lanes (← → keys)
+
+👾 Enemies
+
+Spawn at top
+
+Move downward
+
+Disappear when shot
+
+Cause damage if they reach bottom
+
+🎁 Power-Ups
+
+Spawn randomly inside waves:
+
+🔫 Better gun (faster fire)
+
+❤️ Extra life
+
+💣 Bomb
+
+🛡 Shield
+
+🏗 Basic Architecture (Simple & Clean)
+
+Since you’re already using <canvas>, this structure works well:
+
+Game
+ ├── Player
+ ├── Bullets[]
+ ├── Enemies[]
+ ├── PowerUps[]
+ ├── WaveManager
+ └── InputHandler
+🌀 Wave System (Important Part)
+
+Each wave could be an array of lane spawns:
+
+[
+  { lane: 0, type: "enemy" },
+  { lane: 1, type: "enemy" },
+  { lane: 2, type: "powerup" }
+]
+
+Spawn waves every X seconds.
+
+Difficulty increases by:
+
+Faster enemy speed
+
+More enemies per wave
+
+Fewer powerups
+
+Tougher enemy types
+
+🔁 Game Loop (Core Engine)
+function gameLoop() {
+    update();
+    draw();
+    requestAnimationFrame(gameLoop);
+}
+
+Inside update():
+
+Move enemies
+
+Move bullets
+
+Check collisions
+
+Remove destroyed objects
+
+🎨 Visually Simple First Version
+
+Start with:
+
+Rectangles for enemies
+
+Circles for bullets
+
+Different colors for powerups
+
+You don’t need graphics at first.
+
+⚙ Minimal Prototype Plan (Build in 1–2 Hours)
+
+Phase 1:
+
+3 lanes
+
+Enemies falling
+
+Click to shoot
+
+Basic collision detection
+
+Phase 2:
+
+Lane switching
+
+Wave system
+
+Score counter
+
+Phase 3:
+
+Powerups
+
+Sound
+
+Difficulty scaling
+
+🧠 Important Design Decision
+Do you want:
+
+A) Player locked to one lane at a time
+B) Player shoots freely across all lanes
+C) Auto-shooter (no aiming)
+
+For a fast prototype, I recommend:
+
+🔥 Player locked to a lane + auto fire
+
+It’s simple and feels good quickly.
+
+If you want, I can next give you:
+
+A minimal working HTML + JS starter template
+
+Or help you integrate it into your existing project structure (/src/main.js etc.)
+
+Since you're already comfortable with canvas from the tuner, this is very doable.
+
+function gameLoop() {
+    update();
+    draw();
+    requestAnimationFrame(gameLoop);
+}
+
+[
+  { lane: 0, type: "enemy" },
+  { lane: 1, type: "enemy" },
+  { lane: 2, type: "powerup" }
+]
+
+Game
+ ├── Player
+ ├── Bullets[]
+ ├── Enemies[]
+ ├── PowerUps[]
+ ├── WaveManager
+ └── InputHandler
+
+ 

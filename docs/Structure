@@ -1,0 +1,6 @@
+/index.html
+/src/main.js
+/src/game/Game.js
+/src/game/Player.js
+/src/game/EnemyManager.js
+/src/game/Input.js
