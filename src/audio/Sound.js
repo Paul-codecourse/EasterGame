@@ -3,8 +3,8 @@ export class Sound{
 
     constructor(){
 
-        this.shoot = new Audio("./assets/shoot.mp3");
-        this.explosion = new Audio("assets/explosion.mp3");
+        this.shoot = new Audio("./src/assets/shoot.mp3");
+        this.explosion = new Audio("./src/assets/explosion.mp3");
 
     }
 

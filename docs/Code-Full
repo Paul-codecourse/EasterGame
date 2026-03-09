@@ -1,4 +1,33 @@
-index.html
+Structure v 1.1
+/index.html
+/src/
+│
+├─ main.js
+│
+├─ core/
+│   ├─ Game.js
+│   ├─ Entity.js
+│   └─ Input.js
+│
+├─ entities/
+│   ├─ Player.js
+│   ├─ Enemy.js
+│   └─ Bullet.js
+│
+├─ managers/
+│   ├─ EnemyManager.js
+│   └─ ParticleSystem.js
+│
+├─ effects/
+│   └─ScreenShake.js
+│
+└─ audio/
+    └─ Sound.js
+        └─ assets/
+            └─ explosion.mp3
+            └─ shoot.mp3
+
+<!-- index.html -->
 <!DOCTYPE html>
 <html>
 <head>
@@ -29,8 +58,7 @@ index.html
 </body>
 </html>
 
-
-/src/main.js
+// /src/main.js
 import { Game } from "./core/Game.js";
 
 const canvas = document.getElementById("gameCanvas");
@@ -38,354 +66,58 @@ const game = new Game(canvas);
 
 game.start();
 
-// /src/audio/Sound.js
-export class Sound{
-
-    constructor(){
-
-        this.shoot = new Audio("assets/shoot.wav");
-        this.explosion = new Audio("assets/explosion.wav");
-
-    }
-
-    playShoot(){
-        this.shoot.currentTime=0;
-        this.shoot.play();
-    }
-
-    playExplosion(){
-        this.explosion.currentTime=0;
-        this.explosion.play();
-    }
-
-}
-
-// /src/core/Entity.js
-export class Entity {
+// /src/managers/ParticleSystem.js
+export class ParticleSystem {
 
     constructor(game){
         this.game = game;
-        this.dead = false;
+        this.particles = [];
     }
 
-    update(delta){}
-    draw(ctx){}
+    explode(x,y,color="orange"){
 
-}
+        for(let i=0;i<15;i++){
 
-import { Player } from "../entities/Player.js";
-import { EnemyManager } from "../managers/EnemyManager.js";
-import { Input } from "../core/Input.js";
+            this.particles.push({
+                x,
+                y,
+                vx:(Math.random()-0.5)*200,
+                vy:(Math.random()-0.5)*200,
+                life:500,
+                color
+            });
 
-export class Game {
-    constructor(canvas) {
-        this.canvas = canvas;
-        this.ctx = canvas.getContext("2d");
-
-        this.laneCount = 3;
-        this.laneWidth = canvas.width / this.laneCount;
-
-        this.player = new Player(this);
-        this.enemies = new EnemyManager(this);
-        this.input = new Input(this.player);
-
-        this.score = 0;
-        this.lastTime = 0;
-
-        this.state = "playing"; 
-        // "menu", "playing", "gameover"
-
-        // Optional systems
-        this.entities = [];
-        this.particles = new ParticleSystem(this);
-        this.shake = new ScreenShake();
-        this.sound = new Sound();
-    }
-
-    start() {
-        requestAnimationFrame((t) => this.loop(t));
-    }
-
-    loop(time) {
-        const delta = time - this.lastTime;
-        this.lastTime = time;
-
-        this.update(delta);
-        this.draw();
-        this.shake.update(delta);
-        this.particles.update(delta);
-
-        requestAnimationFrame((t) => this.loop(t));
-    }
-
-    update(delta) {
-
-        if (this.state !== "playing") return;
-
-        this.player.update(delta);
-
-        this.enemies.update(
-            delta,
-            this.player.bullets,
-            (enemy) => {
-
-                this.score++;
-
-                if (this.particles) {
-                    this.particles.explode(enemy.x, enemy.y);
-                }
-
-                if (this.shake) {
-                    this.shake.shake(6, 200);
-                }
-
-                if (this.sound) {
-                    this.sound.playExplosion();
-                }
-
-            }
-        );
-    }
-
-draw() {
-
-    const ctx = this.ctx;
-
-    ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-
-    // Draw lanes
-    ctx.strokeStyle = "#333";
-    for (let i = 1; i < this.laneCount; i++) {
-        ctx.beginPath();
-        ctx.moveTo(i * this.laneWidth, 0);
-        ctx.lineTo(i * this.laneWidth, this.canvas.height);
-        ctx.stroke();
-    }
-
-    // Apply screen shake
-    ctx.save();
-    this.shake.apply(ctx);
-
-    // Draw game entities
-    this.player.draw(ctx);
-    this.enemies.draw(ctx);
-    this.particles.draw(ctx);
-
-    ctx.restore();
-
-    // Draw UI
-    ctx.fillStyle = "white";
-    ctx.font = "16px Arial";
-    ctx.fillText("Score: " + this.score, 10, 20);
-
-    if (this.state === "gameover") {
-        ctx.font = "40px Arial";
-        ctx.fillText("GAME OVER", 70, 300);
-    }
-}
-    }
-
-
-// /src/core/Input.js
-export class Input{
-
-    constructor(player){
-
-        document.addEventListener("keydown",e=>{
-
-            if(e.key==="ArrowLeft") player.moveLeft();
-            if(e.key==="ArrowRight") player.moveRight();
-
-        });
-
-        document.addEventListener("touchstart",e=>{
-
-            const x=e.touches[0].clientX;
-
-            if(x < window.innerWidth/2){
-                player.moveLeft();
-            }else{
-                player.moveRight();
-            }
-
-        });
-
-    }
-
-}
-
-// /src/effects/ScreenShake.js
-export class ScreenShake{
-
-    constructor(){
-        this.duration = 0;
-        this.strength = 0;
-    }
-
-    shake(strength=5,duration=200){
-
-        this.strength=strength;
-        this.duration=duration;
+        }
 
     }
 
     update(delta){
 
-        if(this.duration>0){
-            this.duration-=delta;
-        }
+        this.particles.forEach(p=>{
 
-    }
-
-    apply(ctx){
-
-        if(this.duration>0){
-
-            const dx=(Math.random()-0.5)*this.strength;
-            const dy=(Math.random()-0.5)*this.strength;
-
-            ctx.translate(dx,dy);
-
-        }
-
-    }
-
-}
-
-// src/entities/Bullet.js (blank)
-
-// /src/entities/Enemy.js (blank)
-
-// export class Player {
-//     constructor(game) {
-//         this.game = game;
-//         this.lane = 1;
-//         this.y = game.canvas.height - 60;
-//         this.bullets = [];
-
-//         setInterval(() => {
-//             this.shoot();
-//         }, 300);
-//     }
-
-//     moveLeft() {
-//         if (this.lane > 0) this.lane--;
-//     }
-
-//     moveRight() {
-//         if (this.lane < this.game.laneCount - 1) this.lane++;
-//     }
-
-//     shoot() {
-//         this.bullets.push({
-//             x: this.lane * this.game.laneWidth + this.game.laneWidth / 2,
-//             y: this.y
-//         });
-//     }
-
-//     update() {
-//         this.bullets.forEach(b => b.y -= 6);
-//         this.bullets = this.bullets.filter(b => b.y > 0);
-//     }
-
-//     draw(ctx) {
-//         const laneWidth = this.game.laneWidth;
-
-//         ctx.fillStyle = "cyan";
-//         ctx.fillRect(
-//             this.lane * laneWidth + laneWidth / 2 - 20,
-//             this.y,
-//             40,
-//             20
-//         );
-
-//         ctx.fillStyle = "yellow";
-//         this.bullets.forEach(b => {
-//             ctx.beginPath();
-//             ctx.arc(b.x, b.y, 5, 0, Math.PI * 2);
-//             ctx.fill();
-//         });
-//     }
-// }
-export class Player{
-
-    constructor(game){
-
-        this.game=game;
-
-        this.lane=1;
-        this.y=game.canvas.height-60;
-
-        this.bullets=[];
-
-        this.fireCooldown=0;
-        this.fireRate=300;
-    }
-
-    moveLeft(){
-        if(this.lane>0) this.lane--;
-    }
-
-    moveRight(){
-        if(this.lane<this.game.laneCount-1) this.lane++;
-    }
-
-    shoot(){
-
-        this.bullets.push({
-
-            x:this.lane*this.game.laneWidth+
-              this.game.laneWidth/2,
-
-            y:this.y,
-            speed:350
+            p.x += p.vx * delta/1000;
+            p.y += p.vy * delta/1000;
+            p.life -= delta;
 
         });
 
-    }
-
-    update(delta){
-
-        this.fireCooldown += delta;
-
-        if(this.fireCooldown > this.fireRate){
-            this.shoot();
-            this.fireCooldown=0;
-        }
-
-        this.bullets.forEach(b=>{
-            b.y -= b.speed * delta/1000;
-        });
-
-        this.bullets = this.bullets.filter(b=>b.y>0);
+        this.particles = this.particles.filter(p=>p.life>0);
 
     }
 
     draw(ctx){
 
-        const laneWidth=this.game.laneWidth;
+        this.particles.forEach(p=>{
 
-        ctx.fillStyle="cyan";
-
-        ctx.fillRect(
-            this.lane*laneWidth+laneWidth/2-20,
-            this.y,
-            40,
-            20
-        );
-
-        ctx.fillStyle="yellow";
-
-        this.bullets.forEach(b=>{
-
-            ctx.beginPath();
-            ctx.arc(b.x,b.y,5,0,Math.PI*2);
-            ctx.fill();
+            ctx.fillStyle=p.color;
+            ctx.fillRect(p.x,p.y,3,3);
 
         });
 
     }
+
 }
+
 
 // /src/managers/EnemyManager.js
 // export class EnemyManager {
@@ -561,51 +293,203 @@ export class EnemyManager {
     }
 }
 
-// /src/managers/ParticleSystem.js
-export class ParticleSystem {
+
+// Player.js
+// export class Player {
+//     constructor(game) {
+//         this.game = game;
+//         this.lane = 1;
+//         this.y = game.canvas.height - 60;
+//         this.bullets = [];
+
+//         setInterval(() => {
+//             this.shoot();
+//         }, 300);
+//     }
+
+//     moveLeft() {
+//         if (this.lane > 0) this.lane--;
+//     }
+
+//     moveRight() {
+//         if (this.lane < this.game.laneCount - 1) this.lane++;
+//     }
+
+//     shoot() {
+//         this.bullets.push({
+//             x: this.lane * this.game.laneWidth + this.game.laneWidth / 2,
+//             y: this.y
+//         });
+//     }
+
+//     update() {
+//         this.bullets.forEach(b => b.y -= 6);
+//         this.bullets = this.bullets.filter(b => b.y > 0);
+//     }
+
+//     draw(ctx) {
+//         const laneWidth = this.game.laneWidth;
+
+//         ctx.fillStyle = "cyan";
+//         ctx.fillRect(
+//             this.lane * laneWidth + laneWidth / 2 - 20,
+//             this.y,
+//             40,
+//             20
+//         );
+
+//         ctx.fillStyle = "yellow";
+//         this.bullets.forEach(b => {
+//             ctx.beginPath();
+//             ctx.arc(b.x, b.y, 5, 0, Math.PI * 2);
+//             ctx.fill();
+//         });
+//     }
+// }
+export class Player{
 
     constructor(game){
-        this.game = game;
-        this.particles = [];
+
+        this.game=game;
+
+        this.lane=1;
+        this.y=game.canvas.height-60;
+
+        this.bullets=[];
+
+        this.fireCooldown=0;
+        this.fireRate=300;
     }
 
-    explode(x,y,color="orange"){
+    moveLeft(){
+        if(this.lane>0) this.lane--;
+    }
 
-        for(let i=0;i<15;i++){
+    moveRight(){
+        if(this.lane<this.game.laneCount-1) this.lane++;
+    }
 
-            this.particles.push({
-                x,
-                y,
-                vx:(Math.random()-0.5)*200,
-                vy:(Math.random()-0.5)*200,
-                life:500,
-                color
-            });
+    shoot(){
 
-        }
+        this.bullets.push({
+
+            x:this.lane*this.game.laneWidth+
+              this.game.laneWidth/2,
+
+            y:this.y,
+            speed:350
+
+        });
 
     }
 
     update(delta){
 
-        this.particles.forEach(p=>{
+        this.fireCooldown += delta;
 
-            p.x += p.vx * delta/1000;
-            p.y += p.vy * delta/1000;
-            p.life -= delta;
+        if(this.fireCooldown > this.fireRate){
+            this.shoot();
+            this.fireCooldown=0;
+        }
 
+        this.bullets.forEach(b=>{
+            b.y -= b.speed * delta/1000;
         });
 
-        this.particles = this.particles.filter(p=>p.life>0);
+        this.bullets = this.bullets.filter(b=>b.y>0);
 
     }
 
     draw(ctx){
 
-        this.particles.forEach(p=>{
+        const laneWidth=this.game.laneWidth;
 
-            ctx.fillStyle=p.color;
-            ctx.fillRect(p.x,p.y,3,3);
+        ctx.fillStyle="cyan";
+
+        ctx.fillRect(
+            this.lane*laneWidth+laneWidth/2-20,
+            this.y,
+            40,
+            20
+        );
+
+        ctx.fillStyle="yellow";
+
+        this.bullets.forEach(b=>{
+
+            ctx.beginPath();
+            ctx.arc(b.x,b.y,5,0,Math.PI*2);
+            ctx.fill();
+
+        });
+
+    }
+}
+
+// /src/entities/Enemy.js (blank)
+
+// src/entities/Bullet.js (blank)
+
+// /src/effects/ScreenShake.js
+export class ScreenShake{
+
+    constructor(){
+        this.duration = 0;
+        this.strength = 0;
+    }
+
+    shake(strength=5,duration=200){
+
+        this.strength=strength;
+        this.duration=duration;
+
+    }
+
+    update(delta){
+
+        if(this.duration>0){
+            this.duration-=delta;
+        }
+
+    }
+
+    apply(ctx){
+
+        if(this.duration>0){
+
+            const dx=(Math.random()-0.5)*this.strength;
+            const dy=(Math.random()-0.5)*this.strength;
+
+            ctx.translate(dx,dy);
+
+        }
+
+    }
+
+}
+
+
+// /src/core/Input.js
+export class Input{
+
+    constructor(player){
+
+        document.addEventListener("keydown",e=>{
+
+            if(e.key==="ArrowLeft") player.moveLeft();
+            if(e.key==="ArrowRight") player.moveRight();
+
+        });
+
+        document.addEventListener("touchstart",e=>{
+
+            const x=e.touches[0].clientX;
+
+            if(x < window.innerWidth/2){
+                player.moveLeft();
+            }else{
+                player.moveRight();
+            }
 
         });
 
@@ -613,11 +497,157 @@ export class ParticleSystem {
 
 }
 
-// /src/main.js
-import { Game } from "./core/Game.js";
+// /src/core/Game.js
+import { ParticleSystem } from "../managers/ParticleSystem.js";
+import { ScreenShake } from "../effects/ScreenShake.js";
+import { Sound } from "../audio/Sound.js";
+import { Player } from "../entities/Player.js";
+import { EnemyManager } from "../managers/EnemyManager.js";
+import { Input } from "../core/Input.js";
 
-const canvas = document.getElementById("gameCanvas");
-const game = new Game(canvas);
+export class Game {
+    constructor(canvas) {
+        this.canvas = canvas;
+        this.ctx = canvas.getContext("2d");
 
-game.start();
+        this.laneCount = 3;
+        this.laneWidth = canvas.width / this.laneCount;
+
+        this.player = new Player(this);
+        this.enemies = new EnemyManager(this);
+        this.input = new Input(this.player);
+
+        this.score = 0;
+        this.lastTime = 0;
+
+        this.state = "playing"; 
+        // "menu", "playing", "gameover"
+
+        // Optional systems
+        this.entities = [];
+        this.particles = new ParticleSystem(this);
+        this.shake = new ScreenShake();
+        this.sound = new Sound();
+    }
+
+    start() {
+        requestAnimationFrame((t) => this.loop(t));
+    }
+
+    loop(time) {
+        const delta = time - this.lastTime;
+        this.lastTime = time;
+
+        this.shake.update(delta);
+        this.particles.update(delta);
+        this.update(delta);
+        this.draw();
+        
+        
+
+        requestAnimationFrame((t) => this.loop(t));
+    }
+
+    update(delta) {
+
+        if (this.state !== "playing") return;
+
+        this.player.update(delta);
+
+        this.enemies.update(
+            delta,
+            this.player.bullets,
+            (enemy) => {
+
+                this.score++;
+
+                if (this.particles) {
+                    this.particles.explode(enemy.x, enemy.y);
+                }
+
+                if (this.shake) {
+                    this.shake.shake(6, 200);
+                }
+
+                if (this.sound) {
+                    this.sound.playExplosion();
+                }
+
+            }
+        );
+    }
+
+draw() {
+
+    const ctx = this.ctx;
+
+    ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+
+    // Draw lanes
+    ctx.strokeStyle = "#333";
+    for (let i = 1; i < this.laneCount; i++) {
+        ctx.beginPath();
+        ctx.moveTo(i * this.laneWidth, 0);
+        ctx.lineTo(i * this.laneWidth, this.canvas.height);
+        ctx.stroke();
+    }
+
+    // Apply screen shake
+    ctx.save();
+    this.shake.apply(ctx);
+
+    // Draw game entities
+    this.player.draw(ctx);
+    this.enemies.draw(ctx);
+    this.particles.draw(ctx);
+
+    ctx.restore();
+
+    // Draw UI
+    ctx.fillStyle = "white";
+    ctx.font = "16px Arial";
+    ctx.fillText("Score: " + this.score, 10, 20);
+
+    if (this.state === "gameover") {
+        ctx.font = "40px Arial";
+        ctx.fillText("GAME OVER", 70, 300);
+    }
+}
+    }
+
+
+// /src/core/Entity.js
+export class Entity {
+
+    constructor(game){
+        this.game = game;
+        this.dead = false;
+    }
+
+    update(delta){}
+    draw(ctx){}
+
+}
+
+// /src/audio/Sound.js
+export class Sound{
+
+    constructor(){
+
+        this.shoot = new Audio("./assets/shoot.mp3");
+        this.explosion = new Audio("./assets/explosion.mp3");
+
+    }
+
+    playShoot(){
+        this.shoot.currentTime=0;
+        this.shoot.play();
+    }
+
+    playExplosion(){
+        this.explosion.currentTime=0;
+        this.explosion.play();
+    }
+
+}
 

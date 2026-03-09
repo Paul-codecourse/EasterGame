@@ -1,3 +1,4 @@
+// /src/managers/EnemyManager.js
 // export class EnemyManager {
 //     constructor(game) {
 //         this.game = game;
@@ -137,8 +138,9 @@ export class EnemyManager {
                     this.enemies.splice(ei,1);
                     bullets.splice(bi,1);
 
-                    onKill();
+                    onKill({x:enemyX,y:enemy.y});
                     break;
+
                 }
 
             }

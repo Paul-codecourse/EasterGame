@@ -1,3 +1,4 @@
+// Player.js
 // export class Player {
 //     constructor(game) {
 //         this.game = game;
@@ -83,7 +84,7 @@ export class Player{
             speed:350
 
         });
-
+            this.game.sound.playShoot();
     }
 
     update(delta){
