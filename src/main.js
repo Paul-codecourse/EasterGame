@@ -4,6 +4,8 @@ import { Game } from "./core/Game.js";
 const canvas = document.getElementById("gameCanvas");
 const game = new Game(canvas);
 
+game.start();
+
 document.addEventListener("click", () => {
-    game.start();
+    game.state = "playing";
 }, { once: true });

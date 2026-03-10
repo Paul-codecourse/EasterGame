@@ -1,18 +1,29 @@
-// /src/core/Input.js
 export class Input{
 
-    constructor(player){
+    constructor(game, player){
 
-        document.addEventListener("keydown",e=>{
+        document.addEventListener("keydown", e => {
 
-            if(e.key==="ArrowLeft") player.moveLeft();
-            if(e.key==="ArrowRight") player.moveRight();
+            if(e.key === "ArrowLeft") player.moveLeft();
+            if(e.key === "ArrowRight") player.moveRight();
+
+            // PAUSE TOGGLE
+            if(e.code === "Space"){
+                
+                if(game.state === "playing"){
+                    game.state = "paused";
+                } 
+                else if(game.state === "paused"){
+                    game.state = "playing";
+                }
+
+            }
 
         });
 
-        document.addEventListener("touchstart",e=>{
+        document.addEventListener("touchstart", e => {
 
-            const x=e.touches[0].clientX;
+            const x = e.touches[0].clientX;
 
             if(x < window.innerWidth/2){
                 player.moveLeft();

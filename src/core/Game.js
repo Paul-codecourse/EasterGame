@@ -16,12 +16,12 @@ export class Game {
 
         this.player = new Player(this);
         this.enemies = new EnemyManager(this);
-        this.input = new Input(this.player);
+        this.input = new Input(this, this.player);
 
         this.score = 0;
         this.lastTime = 0;
 
-        this.state = "playing"; 
+        this.state = "menu"; 
         // "menu", "playing", "gameover"
 
         // Optional systems
@@ -93,6 +93,8 @@ draw() {
         ctx.stroke();
     }
 
+
+
     // Apply screen shake
     ctx.save();
     this.shake.apply(ctx);
@@ -113,5 +115,20 @@ draw() {
         ctx.font = "40px Arial";
         ctx.fillText("GAME OVER", 70, 300);
     }
-}
+
+    if (this.state === "paused") {
+        ctx.font = "40px Arial";
+        ctx.fillStyle = "white";
+        ctx.textAlign = "center";
+        ctx.fillText("PAUSED", this.canvas.width/2, 300);
+        ctx.textAlign = "left";
     }
+
+    // CLICK TO START message
+    if (this.state === "menu") {
+        ctx.font = "30px Arial";
+        ctx.fillStyle = "white";
+        ctx.fillText("CLICK TO START", 90, 300);
+    }
+}
+}
