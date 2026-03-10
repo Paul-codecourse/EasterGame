@@ -5,18 +5,59 @@
 <meta charset="UTF-8">
 <title>3 Lane Shooter Starting Layout</title>
 <style>
-    body {
-        margin: 0;
-        background: #111;
-        color: white;
-        text-align: center;
-        font-family: Arial, sans-serif;
-    }
-    canvas {
-        background: #222;
-        display: block;
-        margin: 0 auto;
-    }
+ body {
+    position: relative;
+    margin: 0;
+    background: #1c1c1c; /* dark brushed metal */
+    font-family: Arial, sans-serif;
+    overflow: hidden;
+}
+
+body::before {
+    content: "RNN Library";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) rotate(-30deg);
+    font-size: 100px;
+    font-weight: bold;
+    color: rgba(255, 255, 255, 0.05); /* very subtle */
+    pointer-events: none; /* won’t block clicks */
+    white-space: nowrap;
+    z-index: 0; /* behind canvas */
+}
+        canvas {
+            display: block;
+            margin: 30px auto;
+            border-radius: 10px;
+
+            /* Dark metallic chrome with polished diagonal shine */
+            background:
+                repeating-linear-gradient(
+                    90deg,
+                    rgba(255,255,255,0.07) 0px,
+                    rgba(255,255,255,0.07) 1px,
+                    rgba(0,0,0,0.07) 2px,
+                    rgba(0,0,0,0.07) 3px
+                ),
+                linear-gradient(
+                    135deg,
+                    #3a3a3a 0%,
+                    #2e2e2e 25%,
+                    #3d3d3d 50%,
+                    #2e2e2e 75%,
+                    #3a3a3a 100%
+                );
+
+            box-shadow:
+                0 0 20px rgba(255,255,255,0.15),
+                0 15px 35px rgba(0,0,0,0.7);
+
+            border: 2px solid #555; /* metallic edge */
+
+            /* Optional: subtle reflection highlight */
+            position: relative;
+        }
 </style>
 </head>
 <body>

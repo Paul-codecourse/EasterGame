@@ -100,6 +100,33 @@ draw() {
 
     ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
+    
+
+// WATERMARK BACKGROUND
+ctx.save();
+
+// Move to center
+ctx.translate(this.canvas.width / 2, this.canvas.height / 2);
+
+// Rotate diagonally
+ctx.rotate(-Math.PI / 8);
+
+// Set subtle metallic gradient style
+const gradient = ctx.createLinearGradient(-300, 0, 300, 0);
+gradient.addColorStop(0, "rgba(255,255,255,0.05)");
+gradient.addColorStop(0.5, "rgba(200,200,200,0.05)");
+gradient.addColorStop(1, "rgba(255,255,255,0.05)");
+
+ctx.font = "bold 120px Arial";
+ctx.fillStyle = gradient;
+ctx.textAlign = "center";
+ctx.textBaseline = "middle";
+
+// Draw the watermark
+ctx.fillText("RNN Library", 0, 0);
+
+ctx.restore();
+
     // Draw lanes
     ctx.strokeStyle = "#333";
     for (let i = 1; i < this.laneCount; i++) {
