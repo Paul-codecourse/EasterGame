@@ -130,6 +130,8 @@ draw() {
     if (this.state === "gameover") {
         ctx.font = "40px Arial";
         ctx.fillText("GAME OVER", 70, 300);
+        ctx.font = "20px Arial";
+        ctx.fillText("Press R to Restart", 110, 340);
     }
 
     if (this.state === "paused") {
