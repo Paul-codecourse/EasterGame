@@ -35,6 +35,22 @@ export class Game {
         requestAnimationFrame((t) => this.loop(t));
     }
 
+    restart(){
+
+        this.score = 0;
+        this.state = "playing";
+
+        this.player.lane = 1;
+        this.player.bullets = [];
+        this.player.fireCooldown = 0;
+
+        this.enemies.enemies = [];
+        this.enemies.spawnTimer = 0;
+
+        this.particles.particles = [];
+
+    }
+
     loop(time) {
         const delta = time - this.lastTime;
         this.lastTime = time;

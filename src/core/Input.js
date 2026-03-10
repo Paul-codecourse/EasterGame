@@ -18,6 +18,14 @@ export class Input{
                 }
 
             }
+            // RESTART BUTTON
+            if(e.key === "r" || e.key === "R"){
+
+                if(game.state === "gameover"){
+                    game.restart();
+                }
+
+            }
 
         });
 
