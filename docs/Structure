@@ -4,3 +4,33 @@
 /src/game/Player.js
 /src/game/EnemyManager.js
 /src/game/Input.js
+
+
+Structure v 1.1
+/index.html
+/src/
+│
+├─ main.js
+│
+├─ core/
+│   ├─ Game.js
+│   ├─ Entity.js
+│   └─ Input.js
+│
+├─ entities/
+│   ├─ Player.js
+│   ├─ Enemy.js
+│   └─ Bullet.js
+│
+├─ managers/
+│   ├─ EnemyManager.js
+│   └─ ParticleSystem.js
+│
+├─ effects/
+│   └─ScreenShake.js
+│
+└─ audio/
+    └─ Sound.js
+        └─ assets/
+            └─ explosion.mp3
+            └─ shoot.mp3

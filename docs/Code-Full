@@ -1,3 +1,4 @@
+// Code-Full
 Structure v 1.1
 /index.html
 /src/
@@ -26,7 +27,7 @@ Structure v 1.1
         └─ assets/
             └─ explosion.mp3
             └─ shoot.mp3
-
+// Code-Full
 <!-- index.html -->
 <!DOCTYPE html>
 <html>
@@ -64,7 +65,9 @@ import { Game } from "./core/Game.js";
 const canvas = document.getElementById("gameCanvas");
 const game = new Game(canvas);
 
-game.start();
+document.addEventListener("click", () => {
+    game.start();
+}, { once: true });
 
 // /src/managers/ParticleSystem.js
 export class ParticleSystem {
@@ -259,8 +262,9 @@ export class EnemyManager {
                     this.enemies.splice(ei,1);
                     bullets.splice(bi,1);
 
-                    onKill();
+                    onKill({x:enemyX,y:enemy.y});
                     break;
+
                 }
 
             }
@@ -293,8 +297,7 @@ export class EnemyManager {
     }
 }
 
-
-// Player.js
+// /src/entities/Player.js
 // export class Player {
 //     constructor(game) {
 //         this.game = game;
@@ -380,7 +383,7 @@ export class Player{
             speed:350
 
         });
-
+            this.game.sound.playShoot();
     }
 
     update(delta){
@@ -467,7 +470,6 @@ export class ScreenShake{
     }
 
 }
-
 
 // /src/core/Input.js
 export class Input{
@@ -629,13 +631,14 @@ export class Entity {
 
 }
 
+
 // /src/audio/Sound.js
 export class Sound{
 
     constructor(){
 
-        this.shoot = new Audio("./assets/shoot.mp3");
-        this.explosion = new Audio("./assets/explosion.mp3");
+        this.shoot = new Audio("./src/assets/shoot.mp3");
+        this.explosion = new Audio("./src/assets/explosion.mp3");
 
     }
 
@@ -651,3 +654,6 @@ export class Sound{
 
 }
 
+// /src/audio/explosion.mp3
+
+// /src/audio/shoot.mp3

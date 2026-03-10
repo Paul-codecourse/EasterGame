@@ -172,7 +172,7 @@ function gameLoop() {
   { lane: 2, type: "powerup" }
 ]
 
-Game
+Game Target
  ├── Player
  ├── Bullets[]
  ├── Enemies[]
@@ -180,4 +180,11 @@ Game
  ├── WaveManager
  └── InputHandler
 
- 
+Game current structure
+ ├── src
+  ├── game
+    ├── EnemyManager.js
+    ├── Game.js
+    ├── Input.js
+    └── Player.js
+ index.html

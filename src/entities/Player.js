@@ -1,4 +1,4 @@
-// Player.js
+// /src/entities/Player.js
 // export class Player {
 //     constructor(game) {
 //         this.game = game;
