@@ -6,58 +6,34 @@
 <title>3 Lane Shooter Starting Layout</title>
 <style>
  body {
-    position: relative;
     margin: 0;
-    background: #1c1c1c; /* dark brushed metal */
+    background: #555; /* darker metallic */
     font-family: Arial, sans-serif;
-    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
 }
 
+canvas {
+    display: block;
+    background: linear-gradient(135deg, #444 0%, #666 25%, #444 50%, #666 75%, #444 100%);
+    background-size: 200% 200%;
+    border: 5px solid #888;
+    border-radius: 8px;
+}
+
+/* Optional brushed chrome effect */
 body::before {
     content: "RNN Library";
     position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%) rotate(-30deg);
-    font-size: 100px;
-    font-weight: bold;
-    color: rgba(255, 255, 255, 0.05); /* very subtle */
-    pointer-events: none; /* won’t block clicks */
-    white-space: nowrap;
-    z-index: 0; /* behind canvas */
+    font-size: 80px;
+    color: rgba(255,255,255,0.05);
+    top: 40%;
+    left: 20%;
+    transform: rotate(-20deg);
+    pointer-events: none;
 }
-        canvas {
-            display: block;
-            margin: 30px auto;
-            border-radius: 10px;
-
-            /* Dark metallic chrome with polished diagonal shine */
-            background:
-                repeating-linear-gradient(
-                    90deg,
-                    rgba(255,255,255,0.07) 0px,
-                    rgba(255,255,255,0.07) 1px,
-                    rgba(0,0,0,0.07) 2px,
-                    rgba(0,0,0,0.07) 3px
-                ),
-                linear-gradient(
-                    135deg,
-                    #3a3a3a 0%,
-                    #2e2e2e 25%,
-                    #3d3d3d 50%,
-                    #2e2e2e 75%,
-                    #3a3a3a 100%
-                );
-
-            box-shadow:
-                0 0 20px rgba(255,255,255,0.15),
-                0 15px 35px rgba(0,0,0,0.7);
-
-            border: 2px solid #555; /* metallic edge */
-
-            /* Optional: subtle reflection highlight */
-            position: relative;
-        }
 </style>
 </head>
 <body>

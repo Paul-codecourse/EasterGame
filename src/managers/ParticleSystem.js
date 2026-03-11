@@ -6,36 +6,42 @@ export class ParticleSystem {
         this.particles = [];
     }
 
-    explode(x,y,color="orange"){
+explode(x,y,color="orange",count=20){
 
-        for(let i=0;i<15;i++){
+    for(let i=0;i<count;i++){
 
-            this.particles.push({
-                x,
-                y,
-                vx:(Math.random()-0.5)*200,
-                vy:(Math.random()-0.5)*200,
-                life:500,
-                color
-            });
-
-        }
-
-    }
-
-    update(delta){
-
-        this.particles.forEach(p=>{
-
-            p.x += p.vx * delta/1000;
-            p.y += p.vy * delta/1000;
-            p.life -= delta;
-
+        this.particles.push({
+            x,
+            y,
+            vx:(Math.random()-0.5)*150,
+            vy:(Math.random()*-250), // upward burst
+            life:400+Math.random()*200,
+            color
         });
 
-        this.particles = this.particles.filter(p=>p.life>0);
+    }
 
     }
+
+        update(delta){
+
+            this.particles.forEach(p=>{
+
+                // movement
+                p.x += p.vx * delta/1000;
+                p.y += p.vy * delta/1000;
+
+                // gravity makes particles fall back down
+                p.vy += 400 * delta/1000;
+
+                // lifetime
+                p.life -= delta;
+
+            });
+
+            this.particles = this.particles.filter(p=>p.life>0);
+
+        }
 
     draw(ctx){
 

@@ -3,15 +3,13 @@ import { ParticleSystem } from "../managers/ParticleSystem.js";
 import { ScreenShake } from "../effects/ScreenShake.js";
 import { Sound } from "../audio/Sound.js";
 import { Player } from "../entities/Player.js";
-import { EnemyManager } from "../managers/EnemyManager.js";
 import { Input } from "../core/Input.js";
 import { EggManager } from "../managers/EggManager.js";
 
-// inside constructor:
-
-
 export class Game {
+
     constructor(canvas) {
+
         this.canvas = canvas;
         this.ctx = canvas.getContext("2d");
 
@@ -20,17 +18,13 @@ export class Game {
 
         this.player = new Player(this);
         this.eggs = new EggManager(this);
-        this.enemies = new EnemyManager(this);
         this.input = new Input(this, this.player);
 
         this.score = 0;
         this.lastTime = 0;
 
-        this.state = "menu"; 
-        // "menu", "playing", "gameover"
+        this.state = "menu";
 
-        // Optional systems
-        this.entities = [];
         this.particles = new ParticleSystem(this);
         this.shake = new ScreenShake();
         this.sound = new Sound();
@@ -46,140 +40,130 @@ export class Game {
         this.state = "playing";
 
         this.player.lane = 1;
-        this.player.bullets = [];
-        this.player.fireCooldown = 0;
 
-        this.enemies.enemies = [];
-        this.enemies.spawnTimer = 0;
+
+        // reset eggs
+        this.eggs.eggs = [];
+        this.eggs.spawnTimer = 0;
 
         this.particles.particles = [];
-
     }
 
-    loop(time) {
+    loop(time){
+
         const delta = time - this.lastTime;
         this.lastTime = time;
-        this.eggs.update(delta);
-        this.eggs.draw(this.ctx);
+
         this.shake.update(delta);
         this.particles.update(delta);
+
         this.update(delta);
         this.draw();
-        
-        
 
-        requestAnimationFrame((t) => this.loop(t));
+        requestAnimationFrame((t)=>this.loop(t));
     }
 
-    update(delta) {
+    update(delta){
 
-        if (this.state !== "playing") return;
+        if(this.state !== "playing") return;
 
         this.player.update(delta);
 
-        this.enemies.update(
-            delta,
-            this.player.bullets,
-            (enemy) => {
+        this.eggs.update(delta, this.player, (pos)=>{
 
-                this.score++;
+            this.score++;
 
-                if (this.particles) {
-                    this.particles.explode(enemy.x, enemy.y);
-                }
+            this.particles.explode(pos.x,pos.y,"pink",20);
+            this.shake.shake(4,150);
+            this.sound.playExplosion();
 
-                if (this.shake) {
-                    this.shake.shake(6, 200);
-                }
+        });
 
-                if (this.sound) {
-                    this.sound.playExplosion();
-                }
-
-            }
-        );
     }
 
-draw() {
+    draw(){
 
-    const ctx = this.ctx;
+        const ctx = this.ctx;
 
-    ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+        ctx.clearRect(0,0,this.canvas.width,this.canvas.height);
 
-    
+        // WATERMARK
+        ctx.save();
 
-// WATERMARK BACKGROUND
-ctx.save();
+        ctx.translate(this.canvas.width/2,this.canvas.height/2);
+        ctx.rotate(-Math.PI/8);
 
-// Move to center
-ctx.translate(this.canvas.width / 2, this.canvas.height / 2);
+        const gradient = ctx.createLinearGradient(-300,0,300,0);
+        gradient.addColorStop(0,"rgba(255,255,255,0.05)");
+        gradient.addColorStop(0.5,"rgba(200,200,200,0.05)");
+        gradient.addColorStop(1,"rgba(255,255,255,0.05)");
 
-// Rotate diagonally
-ctx.rotate(-Math.PI / 8);
+        ctx.font="bold 120px Arial";
+        ctx.fillStyle=gradient;
+        ctx.textAlign="center";
+        ctx.textBaseline="middle";
 
-// Set subtle metallic gradient style
-const gradient = ctx.createLinearGradient(-300, 0, 300, 0);
-gradient.addColorStop(0, "rgba(255,255,255,0.05)");
-gradient.addColorStop(0.5, "rgba(200,200,200,0.05)");
-gradient.addColorStop(1, "rgba(255,255,255,0.05)");
+        ctx.fillText("RNN Library",0,0);
 
-ctx.font = "bold 120px Arial";
-ctx.fillStyle = gradient;
-ctx.textAlign = "center";
-ctx.textBaseline = "middle";
+        ctx.restore();
 
-// Draw the watermark
-ctx.fillText("RNN Library", 0, 0);
+        // LANES
+        ctx.strokeStyle="#333";
 
-ctx.restore();
+        for(let i=1;i<this.laneCount;i++){
 
-    // Draw lanes
-    ctx.strokeStyle = "#333";
-    for (let i = 1; i < this.laneCount; i++) {
-        ctx.beginPath();
-        ctx.moveTo(i * this.laneWidth, 0);
-        ctx.lineTo(i * this.laneWidth, this.canvas.height);
-        ctx.stroke();
+            ctx.beginPath();
+            ctx.moveTo(i*this.laneWidth,0);
+            ctx.lineTo(i*this.laneWidth,this.canvas.height);
+            ctx.stroke();
+
+        }
+
+        // GAME WORLD
+        ctx.save();
+        this.shake.apply(ctx);
+
+        this.player.draw(ctx);
+        this.eggs.draw(ctx);
+        this.particles.draw(ctx);
+
+        ctx.restore();
+
+        // UI
+        ctx.fillStyle="white";
+        ctx.font="16px Arial";
+        ctx.textAlign="left";
+
+        ctx.fillText("Score: "+this.score,10,20);
+
+        if(this.state==="gameover"){
+
+            ctx.font="40px Arial";
+            ctx.fillText("GAME OVER",70,300);
+
+            ctx.font="20px Arial";
+            ctx.fillText("Press R to Restart",110,340);
+
+        }
+
+        if(this.state==="paused"){
+
+            ctx.textAlign="center";
+            ctx.font="40px Arial";
+            ctx.fillText("PAUSED",this.canvas.width/2,300);
+            ctx.textAlign="left";
+
+        }
+
+        if(this.state==="menu"){
+
+            ctx.textAlign="center";
+            ctx.font="30px Arial";
+            ctx.fillText("CLICK TO START",this.canvas.width/2,300);
+            ctx.textAlign="left";
+
+        }
+
     }
 
-
-
-    // Apply screen shake
-    ctx.save();
-    this.shake.apply(ctx);
-
-    // Draw game entities
-    this.player.draw(ctx);
-    this.enemies.draw(ctx);
-    this.particles.draw(ctx);
-
-    ctx.restore();
-
-    // Draw UI
-    ctx.fillStyle = "white";
-    ctx.font = "16px Arial";
-    ctx.fillText("Score: " + this.score, 10, 20);
-
-    if (this.state === "gameover") {
-        ctx.font = "40px Arial";
-        ctx.fillText("GAME OVER", 70, 300);
-        ctx.font = "20px Arial";
-        ctx.fillText("Press R to Restart", 110, 340);
-    }
-
-    if (this.state === "paused") {
-        ctx.font = "40px Arial";
-        ctx.fillStyle = "white";
-        ctx.textAlign = "center";
-        ctx.fillText("PAUSED", this.canvas.width/2, 300);
-        ctx.textAlign = "left";
-    }
-
-    // CLICK TO START message
-    if (this.state === "menu") {
-        ctx.font = "30px Arial";
-        ctx.fillStyle = "white";
-        ctx.fillText("CLICK TO START", 90, 300);
-    }
-}
 }
