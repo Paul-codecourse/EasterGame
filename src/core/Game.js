@@ -5,6 +5,10 @@ import { Sound } from "../audio/Sound.js";
 import { Player } from "../entities/Player.js";
 import { EnemyManager } from "../managers/EnemyManager.js";
 import { Input } from "../core/Input.js";
+import { EggManager } from "../managers/EggManager.js";
+
+// inside constructor:
+
 
 export class Game {
     constructor(canvas) {
@@ -15,6 +19,7 @@ export class Game {
         this.laneWidth = canvas.width / this.laneCount;
 
         this.player = new Player(this);
+        this.eggs = new EggManager(this);
         this.enemies = new EnemyManager(this);
         this.input = new Input(this, this.player);
 
@@ -54,7 +59,8 @@ export class Game {
     loop(time) {
         const delta = time - this.lastTime;
         this.lastTime = time;
-
+        this.eggs.update(delta);
+        this.eggs.draw(this.ctx);
         this.shake.update(delta);
         this.particles.update(delta);
         this.update(delta);
