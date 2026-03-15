@@ -45,6 +45,7 @@ export class Game {
         // reset eggs
         this.eggs.eggs = [];
         this.eggs.spawnTimer = 0;
+        this.eggs.missedEggs = 0; //reset missed eggs back yto zero on restart
 
         this.particles.particles = [];
     }
@@ -65,7 +66,10 @@ export class Game {
 
     update(delta){
 
-        if(this.state !== "playing") return;
+            if(this.state !== "playing") {
+                this.player.setIdle();
+                return;
+            }
 
         this.player.update(delta);
 
@@ -107,17 +111,17 @@ export class Game {
 
         ctx.restore();
 
-        // LANES
-        ctx.strokeStyle="#333";
+        // // LANES
+        // ctx.strokeStyle="#333";
 
-        for(let i=1;i<this.laneCount;i++){
+        // for(let i=1;i<this.laneCount;i++){
 
-            ctx.beginPath();
-            ctx.moveTo(i*this.laneWidth,0);
-            ctx.lineTo(i*this.laneWidth,this.canvas.height);
-            ctx.stroke();
+        //     ctx.beginPath();
+        //     ctx.moveTo(i*this.laneWidth,0);
+        //     ctx.lineTo(i*this.laneWidth,this.canvas.height);
+        //     ctx.stroke();
 
-        }
+        // }
 
         // GAME WORLD
         ctx.save();

@@ -3,6 +3,7 @@
 export class Input{
 
     constructor(game, player){
+        console.log("PLAYER CONSTRUCTOR LOADED");
 
         document.addEventListener("keydown", e => {
 

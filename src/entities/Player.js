@@ -1,147 +1,99 @@
 // // /src/entities/Player.js
 
-// export class Player{
-
-//     constructor(game){
-
-//         this.game = game;
-
-//         this.lane = 1;
-//         this.y = game.canvas.height - 80;
-
-//         // rabbit image
-//         this.rabbit = new Image();
-//         this.rabbit.src = "./src/assets/characters/rabbit.png";
-//         this.bounce = 0;
-//         this.jump = 0;
-//         this.width = 70;
-//         this.height = 70;
-//     }
-
-//     // moveLeft(){
-//     //     if(this.lane > 0) this.lane--;
-//     // }
-
-//     // moveRight(){
-//     //     if(this.lane < this.game.laneCount - 1) this.lane++;
-//     // }
-
-//     moveLeft(){
-//         if(this.lane > 0){
-//             this.lane--;
-//             this.jump = 12;
-//         }
-//     }
-
-//     moveRight(){
-//         if(this.lane < this.game.laneCount - 1){
-//             this.lane++;
-//             this.jump = 12;
-//         }
-//     }
-
-//     // update(delta){
-//     //     // no shooting anymore
-//     //     this.bounce = Math.sin(Date.now() * 0.01) * 3;
-//     // }
-
-//     update(delta){
-
-//         this.bounce = Math.sin(Date.now() * 0.01) * 2;
-
-//         if(this.jump > 0){
-//             this.jump -= delta * 0.05;
-//         }
-
-//     }
-
-//     draw(ctx){
-
-//         if(!this.rabbit.complete) return;
-
-//         const laneWidth = this.game.laneWidth;
-
-//         const x =
-//                 this.lane * laneWidth +
-//                 laneWidth / 2 -
-//                 this.width / 2;
-
-//         ctx.drawImage(
-//                 this.rabbit,
-//                 x,
-//                 this.y + this.bounce - this.jump,
-//                 this.width,
-//                 this.height
-//             );
-
-//         }
-
-// }
 export class Player {
 
-    constructor(game){
+    constructor(game) {
         this.game = game;
 
         this.lane = 1;
+        this.width = 70;
+        this.height = 70;
+        this.y = this.game.canvas.height - 80;
 
-        this.images = {
+        // Load images
+        this.sprites = {
             left: new Image(),
             right: new Image(),
-            idle: new Image(),
-            tap: new Image()
+            default: new Image(),
+            stand: new Image()
         };
+        this.sprites.left.src = "./src/assets/characters/rabbitl.png";
+        this.sprites.right.src = "./src/assets/characters/rabbitr.png";
+        this.sprites.default.src = "./src/assets/characters/rabbit.png";  // catching eggs
+        this.sprites.stand.src = "./src/assets/characters/rabbit_stand.png"; // menu / gameover
 
-        this.images.left.src = "./src/assets/characters/rabbitl.png";
-        this.images.right.src = "./src/assets/characters/rabbitr.png";
-        this.images.idle.src = "./src/assets/characters/rabbit_stand.png";
-        this.images.tap.src = "./src/assets/characters/rabbit_tap.png";
-        
-        this.current = this.images.idle;
-        this.width = 80;
-        this.height = 80;
-        this.y = this.game.canvas.height - 120;
+        this.currentSprite = this.sprites.default;
 
-        this.tapTimer = 0;
-        this.missedEggs = 0;
-        this.maxMisses = 5;
+        this.moveTimer = 0;      // ms remaining to show left/right sprite
+        this.moveDuration = 350; // show left/right for 350ms
     }
 
-    moveLeft(){
-        this.lane = Math.max(0, this.lane - 1);
-        this.current = this.images.left;
+    moveLeft() {
+        if (this.lane > 0) {
+            this.lane--;
+            this.currentSprite = this.sprites.left;
+            this.moveTimer = this.moveDuration;
+        }
     }
 
-    moveRight(){
-        this.lane = Math.min(2, this.lane + 1);
-        this.current = this.images.right;
+    moveRight() {
+        if (this.lane < this.game.laneCount - 1) {
+            this.lane++;
+            this.currentSprite = this.sprites.right;
+            this.moveTimer = this.moveDuration;
+        }
     }
 
-    tap(){
-        this.current = this.images.tap;
-        this.tapTimer = 150;
+    // update(delta) {
+    //     // If the game is not playing, always show stand sprite
+    //     if (this.game.state !== "playing") {
+    //         this.currentSprite = this.sprites.stand;
+    //         this.moveTimer = 0;
+    //         return;
+    //     }
+
+update(delta) {
+
+    // countdown movement timer
+    if (this.moveTimer > 0) {
+        this.moveTimer -= delta;
+
+        if (this.moveTimer <= 0) {
+            this.currentSprite = this.sprites.default;
+        }
     }
 
-    update(delta){
+    // if game is playing and no movement active → ensure default sprite
+    if (this.game.state === "playing" && this.moveTimer <= 0) {
+        this.currentSprite = this.sprites.default;
+        console.log(this.currentSprite)
+    }
+}
 
-        if(this.tapTimer > 0){
-            this.tapTimer -= delta;
+    //     // If a left/right move happened, count down the timer
+    //     if (this.moveTimer > 0) {
+    //         this.moveTimer -= delta;
+    //         if (this.moveTimer <= 0) {
+    //             // after 350ms, revert to default gameplay sprite
+    //             this.currentSprite = this.sprites.default;
+    //             console.log(this.currentSprite)
+    //             console.log("this moveTimer countdown")
+    //         }
+    //     }
+    // }
 
-            if(this.tapTimer <= 0){
-                this.current = this.images.idle;
-            }
-        } else {
-        this.current = this.images.idle;
+    draw(ctx) {
+        const laneWidth = this.game.laneWidth;
+        const x = this.lane * laneWidth + laneWidth / 2 - this.width / 2;
+        const y = this.y;
+
+        if (!this.currentSprite.complete) return;
+        ctx.drawImage(this.currentSprite, x, y, this.width, this.height);
     }
 
-    }
-
-    draw(ctx){
-
-        const x =
-            this.lane * this.game.laneWidth +
-            this.game.laneWidth / 2 -
-            this.width / 2;
-        const y = this.game.canvas.height - 120;
-        ctx.drawImage(this.current, x, this.y, this.width, this.height);
+    // explicitly set idle (for menus / game over)
+    setIdle() {
+        this.currentSprite = this.sprites.stand;
+        this.moveTimer = 0;
     }
 }
