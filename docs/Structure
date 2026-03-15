@@ -31,6 +31,53 @@ Structure v 1.1
 │
 └─ audio/
     └─ Sound.js
-        └─ assets/
-            └─ explosion.mp3
-            └─ shoot.mp3
+└─ assets/
+    └─ explosion.mp3
+    └─ shoot.mp3
+
+Structure v 1.2
+/index.html
+/src/
+│
+├─ main.js
+│
+├─ assets/
+│   └─ characters/
+│      ├─ rabbit_jump.png
+│      ├─ rabbit_stand.png
+│      ├─ rabbit_tap.png
+│      ├─ rabbit.png
+│      ├─ rabbitl.png
+│      └─ rabbitr.png
+│   └─ eggs/
+│      ├─ egg1.png
+│      ├─ egg2.png
+│      ├─ egg3.png
+│      ├─ egg4.png
+│      ├─ egg5.png
+│      ├─ egg6.png
+│      └─ egg7.png
+│   ├─ explosion.mp3
+│   ├─ gamemusic.mp3
+│   └─ shoot.mp3
+│
+├─ audio/
+│   └─ Sound.js
+│
+├─ core/
+│   ├─ Game.js
+│   ├─ Entity.js
+│   └─ Input.js
+│
+├─ effects/
+│   └─ ScreenShake.js
+│
+├─ entities/
+│   ├─ Player.js
+│   ├─ Enemy.js
+│   └─ Bullet.js
+│
+├─ managers/
+    ├─ EnemyManager.js
+    ├─ EggManager.js
+    └─ ParticleSystem.js

@@ -5,6 +5,8 @@ export class Sound{
 
         this.shoot = new Audio("./src/assets/shoot.mp3");
         this.explosion = new Audio("./src/assets/explosion.mp3");
+        this.music = new Audio("./src/assets/gamemusic.mp3");
+        this.music.loop = true;
 
     }
 
@@ -19,7 +21,3 @@ export class Sound{
     }
 
 }
-
-
-
-

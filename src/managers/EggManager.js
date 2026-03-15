@@ -1,5 +1,6 @@
 // /src/managers/EggManager.js
 export class EggManager {
+
     constructor(game) {
         this.game = game;
         this.eggs = [];
@@ -13,12 +14,19 @@ export class EggManager {
         }
 
         this.spawnTimer = 0;
-        this.spawnRate = 800; // spawn eggs faster
+        this.spawnRate = 800;
+        this.missedEggs = 0;
+        this.maxMisses = 5;
     }
 
     spawnEgg() {
+
         const lane = Math.floor(Math.random() * this.game.laneCount);
-        const img = this.eggImages[Math.floor(Math.random() * this.eggImages.length)];
+
+        const img = this.eggImages[
+            Math.floor(Math.random() * this.eggImages.length)
+        ];
+
         this.eggs.push({
             lane,
             x: lane * this.game.laneWidth + this.game.laneWidth / 2,
@@ -28,42 +36,84 @@ export class EggManager {
             speed: 150 + Math.random() * 100,
             img,
             rotation: Math.random() * Math.PI * 2,
-            rotationSpeed: (Math.random() - 0.5) * 2 // radians/sec
+            rotationSpeed: (Math.random() - 0.5) * 2
         });
     }
 
     update(delta, player, onCollect) {
+
         this.spawnTimer += delta;
+
         if (this.spawnTimer > this.spawnRate) {
             this.spawnEgg();
             this.spawnTimer = 0;
         }
 
+        // move eggs
         this.eggs.forEach(egg => {
             egg.y += egg.speed * delta / 1000;
             egg.rotation += egg.rotationSpeed * delta / 1000;
         });
 
-        // Collision: simple vertical and lane check
+        // collision
         for (let i = this.eggs.length - 1; i >= 0; i--) {
+
             const egg = this.eggs[i];
-            if (egg.lane === player.lane && egg.y + egg.height > player.y && egg.y < player.y + 20) {
+
+            if (
+                egg.lane === player.lane &&
+                egg.y + egg.height > player.y &&
+                egg.y < player.y + player.height
+            ) {
+
                 onCollect({ x: egg.x, y: egg.y });
+
                 this.eggs.splice(i, 1);
             }
         }
 
-        // Remove eggs off screen
-        this.eggs = this.eggs.filter(egg => egg.y < this.game.canvas.height + 50);
+            if (egg.y > this.game.canvas.height) {
+
+                this.missedEggs++;
+
+                if (this.missedEggs >= this.maxMisses) {
+                    this.game.state = "gameover";
+                }
+
+                this.eggs.splice(i,1);
+
+        }
+
+        // cleanup
+        this.eggs = this.eggs.filter(
+            egg => egg.y < this.game.canvas.height + 50
+        );
     }
 
     draw(ctx) {
+
         this.eggs.forEach(egg => {
+
             ctx.save();
-            ctx.translate(egg.x, egg.y + egg.height / 2); // move origin to center
+
+            ctx.translate(egg.x, egg.y + egg.height / 2);
+
             ctx.rotate(egg.rotation);
-            ctx.drawImage(egg.img, -egg.width/2, -egg.height/2, egg.width, egg.height);
+
+            ctx.drawImage(
+                egg.img,
+                -egg.width / 2,
+                -egg.height / 2,
+                egg.width,
+                egg.height
+            );
+
             ctx.restore();
+
         });
+        ctx.fillStyle="white";
+        ctx.fillText("Missed: " + this.missedEggs + "/5", 10, 40);
+
     }
+
 }
