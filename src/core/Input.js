@@ -1,3 +1,5 @@
+// src/core/input.js
+
 export class Input{
 
     constructor(game, player){
@@ -31,11 +33,12 @@ export class Input{
 
         document.addEventListener("touchstart", e => {
 
-            const x = e.touches[0].clientX;
+            const rect = game.canvas.getBoundingClientRect();
+            const x = e.touches[0].clientX - rect.left;
 
-            if(x < window.innerWidth/2){
+            if(x < rect.width / 2){
                 player.moveLeft();
-            }else{
+            } else {
                 player.moveRight();
             }
 

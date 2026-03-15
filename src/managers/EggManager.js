@@ -1,4 +1,5 @@
 // /src/managers/EggManager.js
+
 export class EggManager {
 
     constructor(game) {
@@ -6,8 +7,8 @@ export class EggManager {
         this.eggs = [];
         this.eggImages = [];
 
-        // Load egg images
-        for (let i = 1; i <= 3; i++) {
+        // load egg images
+        for (let i = 1; i <= 6; i++) {
             const img = new Image();
             img.src = `./src/assets/eggs/egg${i}.png`;
             this.eggImages.push(img);
@@ -15,95 +16,94 @@ export class EggManager {
 
         this.spawnTimer = 0;
         this.spawnRate = 800;
+
         this.missedEggs = 0;
         this.maxMisses = 5;
     }
 
-    spawnEgg() {
+    spawnEgg(){
 
         const lane = Math.floor(Math.random() * this.game.laneCount);
 
-        const img = this.eggImages[
-            Math.floor(Math.random() * this.eggImages.length)
-        ];
+        const img =
+            this.eggImages[
+                Math.floor(Math.random() * this.eggImages.length)
+            ];
 
         this.eggs.push({
             lane,
             x: lane * this.game.laneWidth + this.game.laneWidth / 2,
-            y: -50,
+            y: -40,
             width: 40,
             height: 50,
-            speed: 150 + Math.random() * 100,
+            speed: 150 + Math.random()*80,
             img,
-            rotation: Math.random() * Math.PI * 2,
-            rotationSpeed: (Math.random() - 0.5) * 2
+            rotation: Math.random()*Math.PI*2,
+            rotationSpeed: (Math.random()-0.5)*2
         });
+
     }
 
-    update(delta, player, onCollect) {
+    update(delta, player, onCollect){
 
+        // spawn eggs
         this.spawnTimer += delta;
 
-        if (this.spawnTimer > this.spawnRate) {
+        if(this.spawnTimer > this.spawnRate){
             this.spawnEgg();
             this.spawnTimer = 0;
         }
 
-        // move eggs
-        this.eggs.forEach(egg => {
-            egg.y += egg.speed * delta / 1000;
-            egg.rotation += egg.rotationSpeed * delta / 1000;
-        });
-
-        // collision
-        for (let i = this.eggs.length - 1; i >= 0; i--) {
+        // update eggs
+        for(let i=this.eggs.length-1; i>=0; i--){
 
             const egg = this.eggs[i];
 
-            if (
+            // movement
+            egg.y += egg.speed * delta/1000;
+            egg.rotation += egg.rotationSpeed * delta/1000;
+
+            // caught
+            if(
                 egg.lane === player.lane &&
                 egg.y + egg.height > player.y &&
                 egg.y < player.y + player.height
-            ) {
+            ){
 
-                onCollect({ x: egg.x, y: egg.y });
-
-                this.eggs.splice(i, 1);
+                onCollect({x:egg.x,y:egg.y});
+                this.eggs.splice(i,1);
+                continue;
             }
-        }
 
-            if (egg.y > this.game.canvas.height) {
+            // missed
+            if(egg.y > this.game.canvas.height){
 
                 this.missedEggs++;
 
-                if (this.missedEggs >= this.maxMisses) {
+                if(this.missedEggs >= this.maxMisses){
                     this.game.state = "gameover";
                 }
 
                 this.eggs.splice(i,1);
+            }
 
         }
 
-        // cleanup
-        this.eggs = this.eggs.filter(
-            egg => egg.y < this.game.canvas.height + 50
-        );
     }
 
-    draw(ctx) {
+    draw(ctx){
 
-        this.eggs.forEach(egg => {
+        this.eggs.forEach(egg=>{
 
             ctx.save();
 
-            ctx.translate(egg.x, egg.y + egg.height / 2);
-
+            ctx.translate(egg.x, egg.y + egg.height/2);
             ctx.rotate(egg.rotation);
 
             ctx.drawImage(
                 egg.img,
-                -egg.width / 2,
-                -egg.height / 2,
+                -egg.width/2,
+                -egg.height/2,
                 egg.width,
                 egg.height
             );
@@ -111,9 +111,19 @@ export class EggManager {
             ctx.restore();
 
         });
-        ctx.fillStyle="white";
-        ctx.fillText("Missed: " + this.missedEggs + "/5", 10, 40);
 
+        // UI
+        ctx.fillStyle="white";
+        ctx.font="16px Arial";
+        ctx.textAlign="right";
+
+        ctx.fillText(
+            "Missed: " + this.missedEggs + "/" + this.maxMisses,
+            this.game.canvas.width - 10,
+            20
+        );
+
+        ctx.textAlign="left";
     }
 
 }
