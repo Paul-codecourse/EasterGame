@@ -1,4 +1,4 @@
-<!-- index.html -->
+<!-- index.html 
 <!DOCTYPE html>
 <html>
 <head>
@@ -35,24 +35,8 @@ canvas {
     transform: rotate(-20deg);
     pointer-events: none;
 } */
-body {
-    margin: 0;
-    background: #555;
-    font-family: Arial, sans-serif;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
 
-    /* Repeating watermark */
-    background-image: url("data:image/svg+xml;utf8,\
-    <svg xmlns='http://www.w3.org/2000/svg' width='300' height='200'>\
-        <text x='0' y='100' font-size='40' fill='rgba(255,255,255,0.05)' transform='rotate(-20 150 100)'>RNN Library</text>\
-    </svg>");
-    
-    background-repeat: repeat;
-}
-
+ 
 </style>
 </head>
 <body>
@@ -62,5 +46,82 @@ body {
 <canvas id="gameCanvas" width="400" height="600"></canvas>
 
 <script type="module" src="./src/main.js"></script>
+</body>
+</html> -->
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Easter Egg Catching Game</title>
+<style>
+  /* Body & layout */
+  body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh; /* safer than 100vh on mobile */
+    background: #555;
+    overflow: hidden;
+  }
+
+  /* Instructions */
+  h2, p {
+    margin: 5px;
+    color: #ddd;
+  }
+
+  /* Canvas styling */
+  canvas {
+    display: block;
+    border: 5px solid #888;
+    border-radius: 8px;
+    box-shadow: 0 0 15px rgba(0,0,0,0.5);
+    /* Remove width/height in CSS; JS handles scaling */
+  }
+
+  /* Optional watermark */
+  body::before {
+    content: "RNN Library";
+    position: absolute;
+    font-size: 80px;
+    color: rgba(255,255,255,0.05);
+    top: 40%;
+    left: 20%;
+    transform: rotate(-20deg);
+    pointer-events: none;
+  }
+</style>
+</head>
+<body>
+
+<h2>Egg Catcher</h2>
+<p>Use ← and → to move</p>
+<canvas id="gameCanvas" width="400" height="600"></canvas>
+
+<script type="module" src="./src/main.js"></script>
+
+<script>
+// ======= Canvas Scaling for Mobile =======
+const canvas = document.getElementById("gameCanvas");
+const originalWidth = canvas.width;
+const originalHeight = canvas.height;
+
+// Scale canvas visually while keeping internal resolution fixed
+function resizeCanvas() {
+  const scale = Math.min(window.innerWidth / originalWidth, window.innerHeight / originalHeight);
+  canvas.style.transform = `scale(${scale})`;
+  canvas.style.transformOrigin = 'top left';
+
+  // Optional: center canvas if smaller than screen
+  canvas.style.marginTop = `${(window.innerHeight - originalHeight * scale) / 2}px`;
+}
+
+window.addEventListener("resize", resizeCanvas);
+resizeCanvas(); // initial call
+</script>
+
 </body>
 </html>
