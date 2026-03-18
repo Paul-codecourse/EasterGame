@@ -10,6 +10,7 @@
     background: #555; /* darker metallic */
     font-family: Arial, sans-serif;
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
     height: 100vh;
@@ -24,7 +25,7 @@ canvas {
 }
 
 /* Optional brushed chrome effect */
-body::before {
+/* body::before {
     content: "RNN Library";
     position: absolute;
     font-size: 80px;
@@ -33,7 +34,25 @@ body::before {
     left: 20%;
     transform: rotate(-20deg);
     pointer-events: none;
+} */
+body {
+    margin: 0;
+    background: #555;
+    font-family: Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+
+    /* Repeating watermark */
+    background-image: url("data:image/svg+xml;utf8,\
+    <svg xmlns='http://www.w3.org/2000/svg' width='300' height='200'>\
+        <text x='0' y='100' font-size='40' fill='rgba(255,255,255,0.05)' transform='rotate(-20 150 100)'>RNN Library</text>\
+    </svg>");
+    
+    background-repeat: repeat;
 }
+
 </style>
 </head>
 <body>

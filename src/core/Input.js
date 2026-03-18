@@ -78,7 +78,9 @@ export class Input {
             // Quit
             if (e.key === "q" || e.key === "Q") {
                 console.log("Quitting game...");
-                game.state = "quit";
+                //game.state = "quit";
+                game.state = "gameover";
+              //  game.restart();
             }
 
         });
