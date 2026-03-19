@@ -469,7 +469,7 @@ export class Game {
         // Milestone message
         if (this.milestoneActive && this.milestoneMessage) {
             ctx.textAlign = "center";
-            ctx.font = "36px Arial";
+            ctx.font = "18px Arial";
             ctx.fillStyle = "yellow";
             ctx.textBaseline = "top";
             const milestoneY = this.canvas.height * 0.1; // 10% down
