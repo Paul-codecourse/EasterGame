@@ -105,22 +105,44 @@ canvas {
 
 <script>
 // ======= Canvas Scaling for Mobile =======
-const canvas = document.getElementById("gameCanvas");
-const originalWidth = canvas.width;
-const originalHeight = canvas.height;
+// const canvas = document.getElementById("gameCanvas");
+// const originalWidth = canvas.width;
+// const originalHeight = canvas.height;
 
-// Scale canvas visually while keeping internal resolution fixed
-function resizeCanvas() {
-  const scale = Math.min(window.innerWidth / originalWidth, window.innerHeight / originalHeight);
-  canvas.style.transform = `scale(${scale})`;
-  canvas.style.transformOrigin = 'top left';
+// // Scale canvas visually while keeping internal resolution fixed
+// function resizeCanvas() {
+//   const scale = Math.min(window.innerWidth / originalWidth, window.innerHeight / originalHeight);
+//   canvas.style.transform = `scale(${scale})`;
+//   canvas.style.transformOrigin = 'top left';
 
-  // Optional: center canvas if smaller than screen
-  canvas.style.marginTop = `${(window.innerHeight - originalHeight * scale) / 2}px`;
-}
+//   // Optional: center canvas if smaller than screen
+//   canvas.style.marginTop = `${(window.innerHeight - originalHeight * scale) / 2}px`;
+// }
 
-window.addEventListener("resize", resizeCanvas);
-resizeCanvas(); // initial call
+// window.addEventListener("resize", resizeCanvas);
+// resizeCanvas(); // initial call
+
+  const canvas = document.getElementById("gameCanvas");
+  const ctx = canvas.getContext("2d");
+
+  const baseWidth = 400;
+  const baseHeight = 600;
+
+  function resizeCanvas() {
+    const maxWidth = window.innerWidth;
+    const maxHeight = window.innerHeight;
+
+    const scale = Math.min(maxWidth / baseWidth, maxHeight / baseHeight);
+
+    canvas.width = baseWidth * scale;
+    canvas.height = baseHeight * scale;
+
+    canvas.style.width = canvas.width + "px";
+    canvas.style.height = canvas.height + "px";
+  }
+
+  window.addEventListener("resize", resizeCanvas);
+  resizeCanvas();
 </script>
 
 </body>
