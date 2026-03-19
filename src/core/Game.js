@@ -267,7 +267,7 @@ export class Game {
 
         this.player = new Player(this);
         this.eggs = new EggManager(this);
-        this.input = new Input(this, this.player, this);
+        this.input = new Input(this, this.player);
 
         this.score = 0;
         this.lastTime = 0;
@@ -300,8 +300,8 @@ export class Game {
             document.body.removeEventListener("click", startMusic);
             document.body.removeEventListener("touchstart", startMusic);
         };
-        document.body.addEventListener("click", startMusic);
-        document.body.addEventListener("touchstart", startMusic);
+        document.body.addEventListener("click", startMusic, { once: true });
+        document.body.addEventListener("touchstart", startMusic, { once: true });
     }
 
     restart() {
@@ -331,7 +331,7 @@ export class Game {
             return;
         }
 
-        const delta = time - this.lastTime;
+        const delta = Math.min(time - this.lastTime, 50);
         this.lastTime = time;
 
         this.shake.update(delta);
@@ -393,7 +393,19 @@ export class Game {
 
         });
 
+
+
+
     }
+
+                    drawCenteredText(text, y, size = 20, color = "white") {
+            const ctx = this.ctx;
+            ctx.fillStyle = color;
+            ctx.font = `${size}px Arial`;
+            ctx.textAlign = "center";
+            ctx.fillText(text, this.canvas.width / 2, y);
+            ctx.textAlign = "left";
+        }
 
     draw() {
         const ctx = this.ctx;
@@ -453,17 +465,29 @@ export class Game {
         }
 
         if (this.state === "paused") {
-            ctx.textAlign = "center";
-            ctx.font = "40px Arial";
-            ctx.fillText("PAUSED", this.canvas.width / 2, 300);
-            ctx.textAlign = "left";
-        }
 
+            // Dark overlay
+            ctx.fillStyle = "rgba(0,0,0,0.5)";
+            ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+
+            // Text
+            this.drawCenteredText("PAUSED", 260, 40, "white");
+            this.drawCenteredText("Press SPACE to resume", 320, 20);
+        }
         if (this.state === "menu") {
-            ctx.textAlign = "center";
-            ctx.font = "30px Arial";
-            ctx.fillText("CLICK TO START", this.canvas.width / 2, 300);
-            ctx.textAlign = "left";
+
+            // Title
+            this.drawCenteredText("EGG CATCHER", 180, 36, "yellow");
+
+            // Instructions
+            this.drawCenteredText("← → Move", 260);
+            this.drawCenteredText("Catch the eggs!", 290);
+            this.drawCenteredText("Avoid missing 5 eggs", 320);
+            this.drawCenteredText("M = Toggle Music", 350);
+            this.drawCenteredText("SPACE = Pause", 380);
+
+            // Start prompt
+            this.drawCenteredText("CLICK TO START", 460, 24, "white");
         }
 
         // Milestone message
@@ -477,5 +501,7 @@ export class Game {
             ctx.textAlign = "left";
             ctx.textBaseline = "alphabetic"; // reset
         }
+
+        
     }
 }

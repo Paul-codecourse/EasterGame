@@ -85,16 +85,27 @@ export class Input {
 
         });
 
-        // Touch controls
-        document.addEventListener("touchstart", e => {
+        // // Touch controls
+        // document.addEventListener("touchstart", handler, { passive: true }), e => {
+        //     const rect = game.canvas.getBoundingClientRect();
+        //     const x = e.touches[0].clientX - rect.left;
+        //     if (x < rect.width / 2) {
+        //         player.moveLeft();
+        //     } else {
+        //         player.moveRight();
+        //     }
+        // });
+
+        document.addEventListener("touchstart", (e) => {
             const rect = game.canvas.getBoundingClientRect();
             const x = e.touches[0].clientX - rect.left;
+
             if (x < rect.width / 2) {
                 player.moveLeft();
             } else {
                 player.moveRight();
             }
-        });
+        }, { passive: true });
 
     }
 

@@ -16,7 +16,7 @@ export class EggManager {
 
         this.spawnTimer = 0;
         this.spawnRate = 800;
-
+        // this.spawnRate = Math.max(300, 800 - this.game.score * 5);
         this.missedEggs = 0;
         this.maxMisses = 5;
     }

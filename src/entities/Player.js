@@ -104,7 +104,6 @@ export class Player {
         this.lane = 1;
         this.width = 70;
         this.height = 70;
-        this.y = this.game.canvas.height - 80;
 
         // Sprites
         this.sprites = {
@@ -149,6 +148,7 @@ export class Player {
     }
 
     update(delta) {
+    this.y = this.game.canvas.height - 80;
         // countdown move timer
         if (this.moveTimer > 0) {
             this.moveTimer -= delta;
