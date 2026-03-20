@@ -116,12 +116,13 @@ export class EggManager {
         // UI
         ctx.fillStyle="white";
         ctx.font="16px Arial";
-        ctx.textAlign="right";
+        ctx.textAlign="left";
 
         ctx.fillText(
             "Missed: " + this.missedEggs + "/" + this.maxMisses,
-            this.game.canvas.width - 10,
-            20
+            this.game.canvas.width, 
+            10,
+            40
         );
 
         ctx.textAlign="left";

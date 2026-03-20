@@ -280,6 +280,7 @@ export class Game {
         this.nextMilestone = 100;
         this.musicEnabled = true;
         this.sfxEnabled = true;
+        this.uiButtons = [];
 
         // milestone animation
         this.milestoneActive = false;
@@ -409,110 +410,296 @@ start() {
             ctx.textAlign = "left";
         }
 
-    draw() {
-        const ctx = this.ctx;
-        ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    // draw() {
+    //     const ctx = this.ctx;
+    //     ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
-        if (this.state === "quit") {
-            ctx.fillStyle = "black";
-            ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+    //     if (this.state === "quit") {
+    //         ctx.fillStyle = "black";
+    //         ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
 
-            ctx.textAlign = "center";
-            ctx.font = "40px Arial";
-            ctx.fillStyle = "red";
-            ctx.fillText("GAME QUIT", this.canvas.width / 2, this.canvas.height / 2);
+    //         ctx.textAlign = "center";
+    //         ctx.font = "40px Arial";
+    //         ctx.fillStyle = "red";
+    //         ctx.fillText("GAME QUIT", this.canvas.width / 2, this.canvas.height / 2);
 
-            ctx.font = "20px Arial";
-            ctx.fillStyle = "white";
-            ctx.fillText("Refresh to play again", this.canvas.width / 2, this.canvas.height / 2 + 40);
+    //         ctx.font = "20px Arial";
+    //         ctx.fillStyle = "white";
+    //         ctx.fillText("Refresh to play again", this.canvas.width / 2, this.canvas.height / 2 + 40);
 
-            return; // stop drawing anything else
-        }
+    //         return; // stop drawing anything else
+    //     }
 
-        // Watermark
-        ctx.save();
-        ctx.translate(this.canvas.width / 2, this.canvas.height / 2);
-        ctx.rotate(-Math.PI / 8);
-        const gradient = ctx.createLinearGradient(-300, 0, 300, 0);
-        gradient.addColorStop(0, "rgba(255,255,255,0.05)");
-        gradient.addColorStop(0.5, "rgba(200,200,200,0.05)");
-        gradient.addColorStop(1, "rgba(255,255,255,0.05)");
-        ctx.font = "bold 120px Arial";
-        ctx.fillStyle = gradient;
-        ctx.textAlign = "center";
-        ctx.textBaseline = "middle";
-        ctx.fillText("RNN Library", 0, 0);
-        ctx.restore();
+    //     // Watermark
+    //     ctx.save();
+    //     ctx.translate(this.canvas.width / 2, this.canvas.height / 2);
+    //     ctx.rotate(-Math.PI / 8);
+    //     const gradient = ctx.createLinearGradient(-300, 0, 300, 0);
+    //     gradient.addColorStop(0, "rgba(255,255,255,0.05)");
+    //     gradient.addColorStop(0.5, "rgba(200,200,200,0.05)");
+    //     gradient.addColorStop(1, "rgba(255,255,255,0.05)");
+    //     ctx.font = "bold 120px Arial";
+    //     ctx.fillStyle = gradient;
+    //     ctx.textAlign = "center";
+    //     ctx.textBaseline = "middle";
+    //     ctx.fillText("RNN Library", 0, 0);
+    //     ctx.restore();
 
-        // Game world
-        ctx.save();
-        this.shake.apply(ctx);
-        this.player.draw(ctx);
-        this.eggs.draw(ctx);
-        this.particles.draw(ctx);
-        ctx.restore();
+    //     // Game world
+    //     ctx.save();
+    //     this.shake.apply(ctx);
+    //     this.player.draw(ctx);
+    //     this.eggs.draw(ctx);
+    //     this.particles.draw(ctx);
+    //     ctx.restore();
 
-        // UI
-        ctx.fillStyle = "white";
-        ctx.font = "16px Arial";
-        ctx.textAlign = "left";
-        ctx.fillText("Score: " + this.score, 10, 20);
+    //     // UI
+    //     ctx.fillStyle = "white";
+    //     ctx.font = "16px Arial";
+    //     ctx.textAlign = "left";
+    //     ctx.fillText("Score: " + this.score, 10, 20);
 
-        // States
-        if (this.state === "gameover") {
-            ctx.font = "40px Arial";
-            ctx.fillText("GAME OVER", 70, 300);
-            ctx.font = "20px Arial";
-            ctx.fillText("Press R to Restart", 110, 340);
-        }
+    //     // States
+    //     if (this.state === "gameover") {
+    //         ctx.font = "40px Arial";
+    //         ctx.fillText("GAME OVER", 70, 300);
+    //         ctx.font = "20px Arial";
+    //         ctx.fillText("Press R to Restart", 110, 340);
+    //     }
 
-        if (this.state === "paused") {
+    //     if (this.state === "paused") {
 
-            // Dark overlay
-            ctx.fillStyle = "rgba(0,0,0,0.5)";
-            ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+    //         // Dark overlay
+    //         ctx.fillStyle = "rgba(0,0,0,0.5)";
+    //         ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
 
-            // Text
-            this.drawCenteredText("PAUSED", 260, 40, "white");
-            this.drawCenteredText("Press SPACE to resume", 320, 20);
-        }
-        if (this.state === "menu") {
+    //         // Text
+    //         this.drawCenteredText("PAUSED", 260, 40, "white");
+    //         this.drawCenteredText("Press SPACE to resume", 320, 20);
+    //     }
+    //     if (this.state === "menu") {
 
-            // Title
-            this.drawCenteredText("EGG CATCHER", 180, 36, "yellow");
+    //         // Title
+    //         this.drawCenteredText("EGG CATCHER", 180, 36, "yellow");
 
-            // Instructions
-            this.drawCenteredText("← → Move", 260);
-            this.drawCenteredText("Catch the eggs!", 290);
-            this.drawCenteredText("Avoid missing 5 eggs", 320);
-            this.drawCenteredText(
-            `Music: ${this.musicEnabled ? "ON" : "OFF"}`,
-            410
-            );
+    //         // Instructions
+    //         this.drawCenteredText("← → Move", 260);
+    //         this.drawCenteredText("Catch the eggs!", 290);
+    //         this.drawCenteredText("Avoid missing 5 eggs", 320);
+    //         this.drawCenteredText(
+    //         `Music: M = Music On or Off ${this.musicEnabled ? "ON" : "OFF"}`,
+    //         410
+    //         );
 
-            this.drawCenteredText(
-            `SFX: ${this.sfxEnabled ? "ON" : "OFF"}`,
-            440
-            );
-            // this.drawCenteredText("M = Toggle Music", 350);
-            this.drawCenteredText("SPACE = Pause", 380);
+    //         this.drawCenteredText(
+    //         `SFX: S = Sound effects On or Off ${this.sfxEnabled ? "ON" : "OFF"}`,
+    //         440
+    //         );
+    //         // this.drawCenteredText("M = Toggle Music", 350);
+    //         this.drawCenteredText("SPACE = Pause", 380);
 
-            // Start prompt
-            this.drawCenteredText("CLICK TO START", 460, 24, "white");
-        }
+    //         // Start prompt
+    //         this.drawCenteredText("CLICK TO START", 460, 24, "white");
+    //     }
 
-        // Milestone message
-        if (this.milestoneActive && this.milestoneMessage) {
-            ctx.textAlign = "center";
-            ctx.font = "18px Arial";
-            ctx.fillStyle = "yellow";
-            ctx.textBaseline = "top";
-            const milestoneY = this.canvas.height * 0.1; // 10% down
-            ctx.fillText(this.milestoneMessage, this.canvas.width / 2, milestoneY);
-            ctx.textAlign = "left";
-            ctx.textBaseline = "alphabetic"; // reset
-        }
+    //     // Milestone message
+    //     if (this.milestoneActive && this.milestoneMessage) {
+    //         ctx.textAlign = "center";
+    //         ctx.font = "18px Arial";
+    //         ctx.fillStyle = "yellow";
+    //         ctx.textBaseline = "top";
+    //         const milestoneY = this.canvas.height * 0.1; // 10% down
+    //         ctx.fillText(this.milestoneMessage, this.canvas.width / 2, milestoneY);
+    //         ctx.textAlign = "left";
+    //         ctx.textBaseline = "alphabetic"; // reset
+    //     }
+
+    //     this.uiButtons = [];
+
+    //     const size = 40;
+    //     const padding = 10;
+
+    //     const buttonCount = 5; // update if needed
+
+    //     const barWidth = buttonCount * (size + padding) + padding;
+    //     const barHeight = size + padding * 2;
+
+    //     const barX = this.canvas.width - barWidth;
+    //     const barY = 0;
+
+    //     // Background bar
+    //     this.ctx.fillStyle = "rgba(0, 0, 0, 0.5)";
+    //     this.ctx.fillRect(barX, barY, barWidth, barHeight);
+
+
+
+    //     // Button definitions
+    //     const buttons = [
+    //     { label: this.sfxEnabled ? "🔊" : "🔇", action: "sfx" },
+    //     { label: this.musicEnabled ? "🎵" : "🚫🎵", action: "music" },
+    //     { label: this.state === "paused" ? "▶️" : "⏸", action: "pause" },
+    //     { label: "🔄", action: "restart" },
+    //     { label: "❌", action: "quit" }
+    //     ];
 
         
+    //     // Draw top-right
+    //     buttons.forEach((btn, i) => {
+    //     const x = this.canvas.width - (i + 1) * (size + padding);
+    //     const y = padding;
+
+    //     // // Background (optional)
+    //     // this.ctx.fillStyle = "rgba(0,0,0,0.4)";
+    //     // this.ctx.fillRect(x, y, size, size);
+
+    //     // Icon
+    //     this.ctx.fillStyle = "white";
+    //     this.ctx.font = "20px Arial";
+    //     this.ctx.textAlign = "center";
+    //     this.ctx.textBaseline = "middle";
+    //     this.ctx.fillText(btn.label, x + size / 2, y + size / 2);
+
+    //     // Store hitbox
+    //     this.uiButtons.push({
+    //         x, y, w: size, h: size,
+    //         action: btn.action
+    //     });
+    //     });
+    // }
+draw() {
+    const ctx = this.ctx;
+    ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+
+    // ─── QUIT STATE ──────────────────────────────
+    if (this.state === "quit") {
+        ctx.fillStyle = "black";
+        ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+
+        ctx.textAlign = "center";
+        ctx.font = "40px Arial";
+        ctx.fillStyle = "red";
+        ctx.fillText("GAME QUIT", this.canvas.width / 2, this.canvas.height / 2);
+
+        ctx.font = "20px Arial";
+        ctx.fillStyle = "white";
+        ctx.fillText("Refresh to play again", this.canvas.width / 2, this.canvas.height / 2 + 40);
+        return; // stop drawing anything else
     }
+
+    // ─── WATERMARK ───────────────────────────────
+    ctx.save();
+    ctx.translate(this.canvas.width / 2, this.canvas.height / 2);
+    ctx.rotate(-Math.PI / 8);
+    const gradient = ctx.createLinearGradient(-300, 0, 300, 0);
+    gradient.addColorStop(0, "rgba(255,255,255,0.05)");
+    gradient.addColorStop(0.5, "rgba(200,200,200,0.05)");
+    gradient.addColorStop(1, "rgba(255,255,255,0.05)");
+    ctx.font = "bold 120px Arial";
+    ctx.fillStyle = gradient;
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.fillText("RNN Library", 0, 0);
+    ctx.restore();
+
+    // ─── GAME WORLD ──────────────────────────────
+    ctx.save();
+    this.shake.apply(ctx);
+    this.player.draw(ctx);
+    this.eggs.draw(ctx);
+    this.particles.draw(ctx);
+    ctx.restore();
+
+    // ─── SCORE & MISSED EGGS ─────────────────────
+    ctx.fillStyle = "white";
+    ctx.font = "16px Arial";
+    ctx.textAlign = "left";
+    ctx.fillText("Score: " + this.score, 10, 20);
+    ctx.fillText("Missed: " + this.eggs.missedEggs, 10, 50);
+
+    // ─── GAME STATES ────────────────────────────
+    if (this.state === "gameover") {
+        this.drawCenteredText("GAME OVER", 200, 40, "red");
+        this.drawCenteredText("Press R to Restart", 260, 20, "white");
+    }
+
+    if (this.state === "paused") {
+        ctx.fillStyle = "rgba(0,0,0,0.5)";
+        ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+        this.drawCenteredText("PAUSED", 200, 40, "white");
+        this.drawCenteredText("Press SPACE to resume", 260, 20, "white");
+    }
+
+    if (this.state === "menu") {
+        this.drawCenteredText("EGG CATCHER", 180, 36, "yellow");
+        this.drawCenteredText("← → Move", 260);
+        this.drawCenteredText("Catch the eggs!", 290);
+        this.drawCenteredText("Avoid missing 5 eggs", 320);
+        this.drawCenteredText(`Music: M = ${this.musicEnabled ? "ON" : "OFF"}`, 410);
+        this.drawCenteredText(`SFX: S = ${this.sfxEnabled ? "ON" : "OFF"}`, 440);
+        this.drawCenteredText("SPACE = Pause", 380);
+        this.drawCenteredText("CLICK TO START", 460, 24, "white");
+    }
+
+    // ─── MILESTONE MESSAGE ──────────────────────
+    if (this.milestoneActive && this.milestoneMessage) {
+        const milestoneY = this.canvas.height * 0.1; // 10% down
+        const textWidth = ctx.measureText(this.milestoneMessage).width;
+
+        // Background highlight
+        ctx.fillStyle = "rgba(0,0,0,0.5)";
+        ctx.fillRect(this.canvas.width/2 - textWidth/2 - 10, milestoneY - 5, textWidth + 20, 30);
+
+        // Text
+        ctx.textAlign = "center";
+        ctx.textBaseline = "top";
+        ctx.fillStyle = "yellow";
+        ctx.font = "18px Arial";
+        ctx.fillText(this.milestoneMessage, this.canvas.width / 2, milestoneY);
+
+        // Reset
+        ctx.textAlign = "left";
+        ctx.textBaseline = "alphabetic";
+    }
+
+    // ─── TOP-RIGHT BUTTON BAR ────────────────────
+    const size = 40;
+    const padding = 10;
+    const buttons = [
+        { label: this.sfxEnabled ? "🔊" : "🔇", action: "sfx" },
+        { label: this.musicEnabled ? "🎵" : "🚫🎵", action: "music" },
+        { label: this.state === "paused" ? "▶️" : "⏸", action: "pause" },
+        { label: "🔄", action: "restart" },
+        { label: "❌", action: "quit" }
+    ];
+    const buttonCount = buttons.length;
+    const barWidth = buttonCount * (size + padding) + padding;
+    const barHeight = size + padding * 2;
+    const barX = this.canvas.width - barWidth;
+    const barY = 0;
+
+    // Background bar
+    ctx.fillStyle = "rgba(0,0,0,0.5)";
+    ctx.fillRect(barX, barY, barWidth, barHeight);
+
+    // Draw buttons and store hitboxes
+    this.uiButtons = [];
+    buttons.forEach((btn, i) => {
+        const x = this.canvas.width - (i + 1) * (size + padding);
+        const y = padding;
+
+        // Optional individual button background
+        ctx.fillStyle = "rgba(255,255,255,0.1)";
+        ctx.fillRect(x, y, size, size);
+
+        // Icon
+        ctx.fillStyle = "white";
+        ctx.font = "20px Arial";
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.fillText(btn.label, x + size/2, y + size/2);
+
+        // Store hitbox
+        this.uiButtons.push({ x, y, w: size, h: size, action: btn.action });
+    });
+}
 }
