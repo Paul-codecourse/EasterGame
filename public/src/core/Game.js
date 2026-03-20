@@ -278,6 +278,8 @@ export class Game {
         this.sound = new Sound();
         this.musicPlaying = false;
         this.nextMilestone = 100;
+        this.musicEnabled = true;
+        this.sfxEnabled = true;
 
         // milestone animation
         this.milestoneActive = false;
@@ -287,22 +289,22 @@ export class Game {
         this.milestonePaused = false;       
         this.milestoneFlipInterval = 200; // ms per flip
     }
+start() {
+    requestAnimationFrame((t) => this.loop(t));
 
-    start() {
-        requestAnimationFrame((t) => this.loop(t));
+    const startMusic = () => {
+        if (!this.musicPlaying && this.musicEnabled) {
+            this.sound.playMusic();
+            this.musicPlaying = true;
+        }
 
-        // Start music after first user interaction (click/touch)
-        const startMusic = () => {
-            if (!this.musicPlaying) {
-                this.sound.playMusic();
-                this.musicPlaying = true;
-            }
-            document.body.removeEventListener("click", startMusic);
-            document.body.removeEventListener("touchstart", startMusic);
-        };
-        document.body.addEventListener("click", startMusic, { once: true });
-        document.body.addEventListener("touchstart", startMusic, { once: true });
-    }
+        document.body.removeEventListener("click", startMusic);
+        document.body.removeEventListener("touchstart", startMusic);
+    };
+
+    document.body.addEventListener("click", startMusic);
+    document.body.addEventListener("touchstart", startMusic);
+}
 
     restart() {
         this.score = 0;
@@ -389,7 +391,7 @@ export class Game {
 
             this.particles.explode(pos.x, pos.y, "pink", 20);
             this.shake.shake(4, 150);
-            this.sound.playExplosion();
+            this.sound.playExplosion(this.sfxEnabled);
 
         });
 
@@ -483,7 +485,16 @@ export class Game {
             this.drawCenteredText("← → Move", 260);
             this.drawCenteredText("Catch the eggs!", 290);
             this.drawCenteredText("Avoid missing 5 eggs", 320);
-            this.drawCenteredText("M = Toggle Music", 350);
+            this.drawCenteredText(
+            `Music: ${this.musicEnabled ? "ON" : "OFF"}`,
+            410
+            );
+
+            this.drawCenteredText(
+            `SFX: ${this.sfxEnabled ? "ON" : "OFF"}`,
+            440
+            );
+            // this.drawCenteredText("M = Toggle Music", 350);
             this.drawCenteredText("SPACE = Pause", 380);
 
             // Start prompt

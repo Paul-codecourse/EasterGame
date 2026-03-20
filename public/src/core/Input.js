@@ -66,13 +66,17 @@ export class Input {
 
             // Music toggle
             if (e.key === "m" || e.key === "M") {
-                if (game.musicPlaying) {
-                    game.sound.stopMusic();
-                    game.musicPlaying = false;
-                } else {
+                game.musicEnabled = !game.musicEnabled;
+
+                if (game.musicEnabled) {
                     game.sound.playMusic();
-                    game.musicPlaying = true;
+                } else {
+                    game.sound.stopMusic();
                 }
+            }
+            //SOund effects toggle
+            if (e.key === "s" || e.key === "S") {
+                game.sfxEnabled = !game.sfxEnabled;
             }
 
             // Quit

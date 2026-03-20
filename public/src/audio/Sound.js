@@ -35,4 +35,22 @@ export class Sound{
         this.miss.play();
     }
 
+    playShoot(enabled){
+    if (!enabled) return;
+    this.shoot.currentTime = 0;
+    this.shoot.play();
+    }
+
+    playExplosion(enabled){
+        if (!enabled) return;
+        this.explosion.currentTime = 0;
+        this.explosion.play();
+    }
+
+    playMiss(enabled){
+        if (!enabled) return;
+        this.miss.currentTime = 0;
+        this.miss.play();
+    }
+
 }

@@ -79,7 +79,7 @@ export class EggManager {
             if(egg.y > this.game.canvas.height){
 
                 this.missedEggs++;
-                this.game.sound.playMiss();
+                this.game.sound.playMiss(this.game.sfxEnabled);
 
                 if(this.missedEggs >= this.maxMisses){
                     this.game.state = "gameover";
