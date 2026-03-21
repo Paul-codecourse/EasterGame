@@ -132,6 +132,8 @@ export class Player {
     }
 
     moveLeft() {
+        if (this.moveTimer > 0) return; // ⛔ block while moving
+
         if (this.lane > 0) {
             this.lane--;
             this.currentSprite = this.sprites.left;
@@ -140,6 +142,8 @@ export class Player {
     }
 
     moveRight() {
+        if (this.moveTimer > 0) return; // ⛔ block while moving
+
         if (this.lane < this.game.laneCount - 1) {
             this.lane++;
             this.currentSprite = this.sprites.right;
@@ -147,12 +151,29 @@ export class Player {
         }
     }
 
+    // moveLeft() {
+    //     if (this.lane > 0) {
+    //         this.lane--;
+    //         this.currentSprite = this.sprites.left;
+    //         this.moveTimer = this.moveDuration;
+    //     }
+    // }
+
+    // moveRight() {
+    //     if (this.lane < this.game.laneCount - 1) {
+    //         this.lane++;
+    //         this.currentSprite = this.sprites.right;
+    //         this.moveTimer = this.moveDuration;
+    //     }
+    // }
+
     update(delta) {
     this.y = this.game.canvas.height - 80;
         // countdown move timer
         if (this.moveTimer > 0) {
             this.moveTimer -= delta;
             if (this.moveTimer <= 0) {
+                this.moveTimer = 0;
                 this.currentSprite = this.sprites.default;
             }
         }
