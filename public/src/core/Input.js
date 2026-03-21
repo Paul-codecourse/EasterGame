@@ -420,6 +420,7 @@ export class Input {
 
         document.addEventListener("touchend", e => {
             if (touchStartX === null) return;
+            if (game.state !== "playing") return;
 
             const rect = game.canvas.getBoundingClientRect();
             const touch = e.changedTouches[0];
@@ -433,17 +434,22 @@ export class Input {
             const dx = x - touchStartX;
             const dy = y - touchStartY;
 
-            // horizontal swipe detection
-            if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > swipeThreshold) {
+            const absDx = Math.abs(dx);
+            const absDy = Math.abs(dy);
+
+            // ✅ SWIPE (strict horizontal)
+            if (absDx > swipeThreshold && absDx > absDy * 1.5) {
                 if (dx < 0) player.moveLeft();
                 else player.moveRight();
-            } else {
-                // short tap: move left/right depending on half screen
+            } 
+            // ✅ TAP (only if NOT swipe)
+            else if (absDx < 10 && absDy < 10) {
                 if (x < game.canvas.width / 2) player.moveLeft();
                 else player.moveRight();
             }
 
             touchStartX = null;
+            touchStartY = null;
         }, { passive: true });
     }
 }

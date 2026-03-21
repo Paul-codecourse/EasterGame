@@ -277,7 +277,8 @@ export class Game {
         this.shake = new ScreenShake();
         this.sound = new Sound();
         this.musicPlaying = false;
-        this.nextMilestone = 100;
+        this.nextMilestone = 50;
+        this.milestoneStep = 50;
         this.musicEnabled = true;
         this.sfxEnabled = true;
         this.uiButtons = [];
@@ -320,7 +321,7 @@ start() {
         this.particles.particles = [];
 
         // reset milestone
-        this.nextMilestone = 100;
+        this.nextMilestone = 50;
         this.milestoneActive = false;
         this.milestoneTimer = 0;
         this.milestoneFlips = 0;
@@ -386,8 +387,12 @@ start() {
                 this.milestonePaused = true;
                 this.milestoneTimer = 0;
                 this.milestoneFlips = 0;
-                this.milestoneMessage = `Congratulations! You have scored ${this.nextMilestone}`;
-                this.nextMilestone += 100;
+                if (this.nextMilestone === 50) {
+                    this.milestoneMessage = "Great start! 50 points! \nNow see if you can get to the next level";
+                } else {
+                    this.milestoneMessage = `Congratulations! \n You have reached the next level \nand scored ${this.nextMilestone}\nHow far can you get?`;
+                }
+                this.nextMilestone += this.milestoneStep;
             }
 
             this.particles.explode(pos.x, pos.y, "pink", 20);
@@ -641,20 +646,95 @@ draw() {
     }
 
     // ─── MILESTONE MESSAGE ──────────────────────
+    // if (this.milestoneActive && this.milestoneMessage) {
+    //     const milestoneY = this.canvas.height * 0.2; // 20% down
+    //     const textWidth = ctx.measureText(this.milestoneMessage).width;
+
+    //     // Background highlight
+    //     ctx.fillStyle = "rgba(0,0,0,0.5)";
+    //     ctx.fillRect(this.canvas.width/2 - textWidth/2 - 10, milestoneY - 5, textWidth + 20, 30);
+
+    //     const lines = this.milestoneMessage.split("\n");
+    //     const lineHeight = 22;
+
+    //     // Measure widest line
+    //     const maxWidth = Math.max(...lines.map(line => ctx.measureText(line).width));
+    //     const boxHeight = lines.length * lineHeight;
+
+    //     // Background box
+    //     ctx.fillStyle = "rgba(0,0,0,0.5)";
+    //     ctx.fillRect(
+    //         this.canvas.width / 2 - maxWidth / 2 - 10,
+    //         milestoneY - 5,
+    //         maxWidth + 20,
+    //         boxHeight + 10
+    //     );
+
+    //     // Text
+    //     ctx.fillStyle = "yellow";
+    //     ctx.font = "18px Arial";
+    //     ctx.textAlign = "center";
+    //     ctx.textBaseline = "top";
+
+    //     // 🔹 DRAW EACH LINE
+    //     lines.forEach((line, i) => {
+    //         ctx.fillText(
+    //             line,
+    //             this.canvas.width / 2,
+    //             milestoneY + i * lineHeight
+    //         );
+    //     });
+
+    //     // Reset (important)
+    //     ctx.textAlign = "left";
+    //     ctx.textBaseline = "alphabetic";
+
+    //     // Text
+    //     ctx.textAlign = "center";
+    //     ctx.textBaseline = "top";
+    //     ctx.fillStyle = "yellow";
+    //     ctx.font = "18px Arial";
+    //     ctx.fillText(this.milestoneMessage, this.canvas.width / 2, milestoneY);
+
+    //     // Reset
+    //     ctx.textAlign = "left";
+    //     ctx.textBaseline = "alphabetic";
+    // }
+
     if (this.milestoneActive && this.milestoneMessage) {
-        const milestoneY = this.canvas.height * 0.1; // 10% down
-        const textWidth = ctx.measureText(this.milestoneMessage).width;
+        const milestoneY = this.canvas.height * 0.2;
 
-        // Background highlight
+        const lines = this.milestoneMessage.split("\n");
+        const lineHeight = 22;
+
+        ctx.font = "18px Arial";
+
+        // Measure widest line
+        const maxWidth = Math.max(...lines.map(line => ctx.measureText(line).width));
+        const boxHeight = lines.length * lineHeight;
+
+        // Background box
         ctx.fillStyle = "rgba(0,0,0,0.5)";
-        ctx.fillRect(this.canvas.width/2 - textWidth/2 - 10, milestoneY - 5, textWidth + 20, 30);
+        ctx.fillRect(
+            this.canvas.width / 2 - maxWidth / 2 - 10,
+            milestoneY - 5,
+            maxWidth + 20,
+            boxHeight + 10
+        );
 
-        // Text
+        // Text settings
+        ctx.fillStyle = "yellow";
         ctx.textAlign = "center";
         ctx.textBaseline = "top";
-        ctx.fillStyle = "yellow";
-        ctx.font = "18px Arial";
-        ctx.fillText(this.milestoneMessage, this.canvas.width / 2, milestoneY);
+
+        // Draw each line
+        lines.forEach((line, i) => {
+            ctx.fillText(
+                line,
+                this.canvas.width / 2,
+                milestoneY + i * lineHeight
+            );
+        });
 
         // Reset
         ctx.textAlign = "left";
