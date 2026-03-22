@@ -90,6 +90,21 @@ canvas {
     color: #ddd;
   }
 
+    .info-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 15px;
+  }
+
+  .info-row img {
+    width: 80px;
+    height: auto;
+  }
+
+  #game-info img {
+    image-rendering: pixelated;
+  }
+
   /* Canvas styling */
   canvas {
     display: block;
@@ -143,27 +158,35 @@ canvas {
 <body>
 
 <div id="game-wrapper">
-    <div id="game-info">
-        <table><h1>Egg Catch</h1>
-        <tr><td><img src=".\src\assets\characters\rabbit_stand.png" alt="Ronnie the RNN Rabbit" height="50%" width="50%"></td><td><p>
-            Easter chaos!<br>
-            Eggs are raining down on Ronnie!<br>
-            Catch them all before it's too late!
-        </p>
-        <hr/>
-        <p>
-          M = Music on/off <br/>
-          S = Sound on/off <br/>
-          R = Restart <br/>
-          Q = Quit <br/>
-        </p></td></tr></table>
+<div id="game-info">
 
+    <h1>Egg Catch</h1>
+
+    <div class="info-row">
+        <img src="./src/assets/characters/rabbit_stand.png" alt="Ronnie">
+
+        <div>
+            <p>
+                Easter chaos!<br>
+                Eggs are raining down on Ronnie!<br>
+                Catch them all before it's too late!
+            </p>
+
+            <hr/>
+
+            <p>
+                M = Music on/off <br/>
+                S = Sound on/off <br/>
+                R = Restart <br/>
+                Q = Quit <br/>
+            </p>
+        </div>
     </div>
+
+</div>
 
     <canvas id="gameCanvas" width="400" height="600"></canvas>
 </div>
-
-<!-- <canvas id="gameCanvas" width="400" height="600"></canvas> -->
 
 <script type="module" src="./src/main.js"></script>
 
