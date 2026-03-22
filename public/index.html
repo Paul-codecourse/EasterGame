@@ -54,6 +54,23 @@ canvas {
 <meta charset="UTF-8">
 <title>Easter Egg Catching Game</title>
 <style>
+/*Flex layout*/
+  @media (max-width: 768px) {
+    #game-wrapper {
+      flex-direction: column;
+    }
+
+    #game-info {
+      display: none;
+    }
+  }
+
+  #game-info {
+    background: rgba(0,0,0,0.3);
+    padding: 20px;
+    border-radius: 10px;
+  }
+
   /* Body & layout */
   body {
     margin: 0;
@@ -94,11 +111,59 @@ canvas {
     transform: rotate(-20deg);
     pointer-events: none;
   }
+
+  #game-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 40px;
+    margin-top: 20px;
+  }
+
+  /* Left panel */
+  #game-info {
+    max-width: 260px;
+    color: #ddd;
+    text-align: left;
+  }
+
+  #game-info h1 {
+    font-size: 36px;
+    margin-bottom: 10px;
+    color: yellow;
+  }
+
+  #game-info p {
+    font-size: 18px;
+    line-height: 1.4;
+  }
+
 </style>
 </head>
 <body>
 
-<canvas id="gameCanvas" width="400" height="600"></canvas>
+<div id="game-wrapper">
+    <div id="game-info">
+        <table><h1>Egg Catch</h1>
+        <tr><td><img src=".\src\assets\characters\rabbit_stand.png" alt="Ronnie the RNN Rabbit" height="50%" width="50%"></td><td><p>
+            Easter chaos!<br>
+            Eggs are raining down on Ronnie!<br>
+            Catch them all before it's too late!
+        </p>
+        <hr/>
+        <p>
+          M = Music on/off <br/>
+          S = Sound on/off <br/>
+          R = Restart <br/>
+          Q = Quit <br/>
+        </p></td></tr></table>
+
+    </div>
+
+    <canvas id="gameCanvas" width="400" height="600"></canvas>
+</div>
+
+<!-- <canvas id="gameCanvas" width="400" height="600"></canvas> -->
 
 <script type="module" src="./src/main.js"></script>
 

@@ -619,9 +619,10 @@ draw() {
     // ─── GAME WORLD ──────────────────────────────
     ctx.save();
     this.shake.apply(ctx);
+    if (this.state !== "menu") {
     this.player.draw(ctx);
     this.eggs.draw(ctx);
-    this.particles.draw(ctx);
+    this.particles.draw(ctx);}
     ctx.restore();
 
     // ─── SCORE & MISSED EGGS ─────────────────────
@@ -645,15 +646,49 @@ draw() {
     }
 
     if (this.state === "menu") {
-        this.drawCenteredText("EGG CATCHER", 180, 36, "yellow");
-        this.drawCenteredText("← → Move", 260);
-        this.drawCenteredText("Catch the eggs!", 290);
-        this.drawCenteredText("Avoid missing 5 eggs", 320);
-        this.drawCenteredText(`Music: M = ${this.musicEnabled ? "ON" : "OFF"}`, 410);
-        this.drawCenteredText(`SFX: S = ${this.sfxEnabled ? "ON" : "OFF"}`, 440);
-        this.drawCenteredText("SPACE = Pause", 380);
-        this.drawCenteredText("CLICK TO START", 460, 24, "white");
+        const lines = [
+            "Someone is dropping Easter eggs on Ronnie!",
+            "Help him catch them!",
+            "",
+            "← → Move",
+            "Catch the eggs!",
+            "Avoid missing 5 eggs",
+            "",
+            "CLICK TO START"
+        ];
+
+        const startY = 200;
+        const lineHeight = 28;
+
+        ctx.fillStyle = "white";
+        ctx.font = "20px Arial";
+        ctx.textAlign = "center";
+
+        lines.forEach((line, i) => {
+            ctx.fillText(line, this.canvas.width / 2, startY + i * lineHeight);
+        });
+
+        ctx.textAlign = "left"; // reset
     }
+
+
+
+
+
+
+
+
+
+
+    //     this.drawCenteredText("EGG CATCHER", 180, 36, "yellow");
+    //     this.drawCenteredText("← → Move", 260);
+    //     this.drawCenteredText("Catch the eggs!", 290);
+    //     this.drawCenteredText("Avoid missing 5 eggs", 320);
+    //     this.drawCenteredText(`Music: M = ${this.musicEnabled ? "ON" : "OFF"}`, 410);
+    //     this.drawCenteredText(`SFX: S = ${this.sfxEnabled ? "ON" : "OFF"}`, 440);
+    //     this.drawCenteredText("SPACE = Pause", 380);
+    //     this.drawCenteredText("CLICK TO START", 460, 24, "white");
+    // }
 
 // Milestone message
     if (this.milestoneActive && this.milestoneMessage) {
