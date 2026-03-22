@@ -120,9 +120,8 @@ export class EggManager {
 
         ctx.fillText(
             "Missed: " + this.missedEggs + "/" + this.maxMisses,
-            this.game.canvas.width, 
-            10,
-            40
+            this.game.canvas.width - 120,
+            20
         );
 
         ctx.textAlign="left";

@@ -593,18 +593,28 @@ draw() {
 
     // ─── WATERMARK ───────────────────────────────
     ctx.save();
-    ctx.translate(this.canvas.width / 2, this.canvas.height / 2);
-    ctx.rotate(-Math.PI / 8);
-    const gradient = ctx.createLinearGradient(-300, 0, 300, 0);
-    gradient.addColorStop(0, "rgba(255,255,255,0.05)");
-    gradient.addColorStop(0.5, "rgba(200,200,200,0.05)");
-    gradient.addColorStop(1, "rgba(255,255,255,0.05)");
-    ctx.font = "bold 120px Arial";
-    ctx.fillStyle = gradient;
-    ctx.textAlign = "center";
-    ctx.textBaseline = "middle";
-    ctx.fillText("RNN Library", 0, 0);
-    ctx.restore();
+
+        ctx.font = "bold 30px Arial";
+        ctx.fillStyle = "rgba(255,255,255,0.05)";
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+
+        const spacingX = 200;
+        const spacingY = 100;
+
+        for (let y = -spacingY; y < this.canvas.height + spacingY; y += spacingY) {
+            for (let x = -spacingX; x < this.canvas.width + spacingX; x += spacingX) {
+
+                ctx.save();
+                ctx.translate(x, y);
+                ctx.rotate(-Math.PI / 8);
+                ctx.fillText("RNN Library", 0, 0);
+                ctx.restore();
+
+            }
+        }
+
+        ctx.restore();
 
     // ─── GAME WORLD ──────────────────────────────
     ctx.save();
@@ -645,62 +655,7 @@ draw() {
         this.drawCenteredText("CLICK TO START", 460, 24, "white");
     }
 
-    // ─── MILESTONE MESSAGE ──────────────────────
-    // if (this.milestoneActive && this.milestoneMessage) {
-    //     const milestoneY = this.canvas.height * 0.2; // 20% down
-    //     const textWidth = ctx.measureText(this.milestoneMessage).width;
-
-    //     // Background highlight
-    //     ctx.fillStyle = "rgba(0,0,0,0.5)";
-    //     ctx.fillRect(this.canvas.width/2 - textWidth/2 - 10, milestoneY - 5, textWidth + 20, 30);
-
-    //     const lines = this.milestoneMessage.split("\n");
-    //     const lineHeight = 22;
-
-    //     // Measure widest line
-    //     const maxWidth = Math.max(...lines.map(line => ctx.measureText(line).width));
-    //     const boxHeight = lines.length * lineHeight;
-
-    //     // Background box
-    //     ctx.fillStyle = "rgba(0,0,0,0.5)";
-    //     ctx.fillRect(
-    //         this.canvas.width / 2 - maxWidth / 2 - 10,
-    //         milestoneY - 5,
-    //         maxWidth + 20,
-    //         boxHeight + 10
-    //     );
-
-    //     // Text
-    //     ctx.fillStyle = "yellow";
-    //     ctx.font = "18px Arial";
-    //     ctx.textAlign = "center";
-    //     ctx.textBaseline = "top";
-
-    //     // 🔹 DRAW EACH LINE
-    //     lines.forEach((line, i) => {
-    //         ctx.fillText(
-    //             line,
-    //             this.canvas.width / 2,
-    //             milestoneY + i * lineHeight
-    //         );
-    //     });
-
-    //     // Reset (important)
-    //     ctx.textAlign = "left";
-    //     ctx.textBaseline = "alphabetic";
-
-    //     // Text
-    //     ctx.textAlign = "center";
-    //     ctx.textBaseline = "top";
-    //     ctx.fillStyle = "yellow";
-    //     ctx.font = "18px Arial";
-    //     ctx.fillText(this.milestoneMessage, this.canvas.width / 2, milestoneY);
-
-    //     // Reset
-    //     ctx.textAlign = "left";
-    //     ctx.textBaseline = "alphabetic";
-    // }
-
+// Milestone message
     if (this.milestoneActive && this.milestoneMessage) {
         const milestoneY = this.canvas.height * 0.2;
 
